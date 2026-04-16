@@ -1,0 +1,475 @@
+---
+/**
+ * Work index — /work
+ *
+ * Two filters: "Selected Work" | "Projects"
+ *
+ * Selected Work — unclickable images only. No title, no overlay.
+ *   All selected-works entries, including Milkshake Collective.
+ *   Subtle scale animation on hover — no chrome.
+ *
+ * Projects — clickable cards with title overlay.
+ *   All projects entries + Milkshake Collective (isCollection: true)
+ *   linking to /work/[slug].
+ *
+ * Default active: Selected Work.
+ */
+import Layout from '../../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+// ── Content ───────────────────────────────────────────────────
+const selectedWorks = await getCollection('selected-works');
+const projects      = await getCollection('projects');
+
+// Sort descending by date
+const sortedSelected = selectedWorks.sort(
+  (a, b) => b.data.date.getTime() - a.data.date.getTime()
+);
+const sortedProjects = projects.sort(
+  (a, b) => b.data.date.getTime() - a.data.date.getTime()
+);
+
+// Collections that get their own detail page (/work/[slug])
+const collectionsFromSelected = selectedWorks.filter(e => e.data.isCollection);
+
+// ── Cover image resolution ────────────────────────────────────
+const selectedCovers = import.meta.glob<{ default: ImageMetadata }>(
+  [
+    '/src/content/selected-works/*/media/*.jpg',
+    '/src/content/selected-works/*/media/*.JPG',
+    '/src/content/selected-works/*/media/*.jpeg',
+    '/src/content/selected-works/*/media/*.JPEG',
+    '/src/content/selected-works/*/media/*.webp',
+    '/src/content/selected-works/*/media/*.WEBP',
+    '/src/content/selected-works/*/media/*.png',
+    '/src/content/selected-works/*/media/*.PNG',
+  ],
+  { eager: true }
+);
+
+const projectCovers = import.meta.glob<{ default: ImageMetadata }>(
+  [
+    '/src/content/projects/*/media/*.jpg',
+    '/src/content/projects/*/media/*.JPG',
+    '/src/content/projects/*/media/*.jpeg',
+    '/src/content/projects/*/media/*.JPEG',
+    '/src/content/projects/*/media/*.webp',
+    '/src/content/projects/*/media/*.WEBP',
+    '/src/content/projects/*/media/*.png',
+    '/src/content/projects/*/media/*.PNG',
+  ],
+  { eager: true }
+);
+
+function resolveCover(
+  slug: string,
+  coverPath: string,
+  map: Record<string, { default: ImageMetadata }>,
+  collection: string
+): ImageMetadata | null {
+  const filename = coverPath.split('/').pop();
+  if (!filename) return null;
+  const filenameLower = filename.toLowerCase();
+  for (const [path, mod] of Object.entries(map)) {
+    const segs = path.split('/');
+    const collIdx = segs.findIndex(s => s === collection);
+    if (collIdx !== -1 && segs[collIdx + 1] === slug) {
+      if (segs[segs.length - 1].toLowerCase() === filenameLower && mod.default) {
+        return mod.default;
+      }
+    }
+  }
+  return null;
+}
+
+// Build card data for selected works
+const selectedCards = sortedSelected.map(e => ({
+  slug:    e.data.slug,
+  title:   e.data.title,
+  cover:   resolveCover(e.data.slug, e.data.coverImage, selectedCovers, 'selected-works'),
+}));
+
+// Build card data for projects
+const projectCards = sortedProjects.map(e => ({
+  slug:    e.data.slug,
+  title:   e.data.title,
+  href:    `/projects/${e.data.slug}`,
+  cover:   resolveCover(e.data.slug, e.data.coverImage, projectCovers, 'projects'),
+}));
+
+// Milkshake Collective as a clickable collection in Projects
+const collectionCards = collectionsFromSelected.map(e => ({
+  slug:    e.data.slug,
+  title:   e.data.title,
+  href:    `/work/${e.data.slug}`,
+  cover:   resolveCover(e.data.slug, e.data.coverImage, selectedCovers, 'selected-works'),
+}));
+
+// Combine projects + collections for "Projects" tab, most recent first
+const allProjectCards = [
+  ...collectionCards,
+  ...projectCards,
+];
+---
+
+<Layout
+  title="Work"
+  description="Photography and creative direction by Adeyinka Maddy."
+>
+
+<!-- ═══════════════════════════════════════════════════════════
+     PAGE HEADER
+════════════════════════════════════════════════════════════ -->
+<section class="page-header">
+  <div class="header-inner">
+    <span class="header-label">Work</span>
+  </div>
+  <div class="header-rule" aria-hidden="true"></div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     FILTER BAR
+     Two options only: Selected Work | Projects
+     Default: Selected Work active.
+════════════════════════════════════════════════════════════ -->
+<div class="filter-bar" role="navigation" aria-label="Filter work">
+  <button class="filter-btn" data-filter="selected" aria-pressed="true">
+    Selected Work
+  </button>
+  <span class="filter-sep" aria-hidden="true">/</span>
+  <button class="filter-btn" data-filter="projects" aria-pressed="false">
+    Projects
+  </button>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     SELECTED WORK GRID
+     Unclickable images. No overlay. No title. Just photographs.
+     Subtle scale on hover — meditative, image-only.
+════════════════════════════════════════════════════════════ -->
+<section
+  class="grid-section"
+  id="grid-selected"
+  aria-label="Selected work"
+  aria-live="polite"
+>
+  <div class="work-grid">
+    {selectedCards.map(({ slug, title, cover }, i) => (
+      <figure
+        class="work-item work-item--static"
+        aria-label={title}
+      >
+        <div class="item-img-wrap">
+          {cover ? (
+            <Image
+              src={cover}
+              alt={title}
+              class="item-img"
+              loading={i < 6 ? 'eager' : 'lazy'}
+              widths={[500, 800, 1100]}
+              sizes="(max-width: 767px) 100vw, 45vw"
+            />
+          ) : (
+            <div class="item-placeholder" aria-hidden="true"></div>
+          )}
+        </div>
+      </figure>
+    ))}
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     PROJECTS GRID
+     Clickable cards with title overlay.
+     Milkshake Collective → /work/[slug]
+     All other projects → /projects/[slug]
+════════════════════════════════════════════════════════════ -->
+<section
+  class="grid-section"
+  id="grid-projects"
+  aria-label="Projects"
+  aria-live="polite"
+  hidden
+>
+  <div class="work-grid">
+    {allProjectCards.map(({ slug, title, href, cover }, i) => (
+      <figure
+        class="work-item work-item--linked"
+        aria-label={title}
+      >
+        <a
+          href={href}
+          class="item-link"
+          tabindex="0"
+        >
+          <div class="item-img-wrap">
+            {cover ? (
+              <Image
+                src={cover}
+                alt={title}
+                class="item-img"
+                loading={i < 4 ? 'eager' : 'lazy'}
+                widths={[500, 800, 1100]}
+                sizes="(max-width: 767px) 100vw, 45vw"
+              />
+            ) : (
+              <div class="item-placeholder" aria-hidden="true"></div>
+            )}
+
+            <!-- Hover overlay — title only -->
+            <div class="item-overlay" aria-hidden="true">
+              <span class="overlay-title">{title}</span>
+            </div>
+          </div>
+        </a>
+      </figure>
+    ))}
+  </div>
+</section>
+
+<div class="page-rest" aria-hidden="true"></div>
+
+</Layout>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     FILTER SCRIPT
+════════════════════════════════════════════════════════════ -->
+<script>
+  const buttons    = document.querySelectorAll<HTMLButtonElement>('.filter-btn');
+  const gridSel    = document.getElementById('grid-selected')!;
+  const gridProj   = document.getElementById('grid-projects')!;
+
+  buttons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const filter = btn.dataset.filter!;
+
+      buttons.forEach(b => b.setAttribute('aria-pressed', 'false'));
+      btn.setAttribute('aria-pressed', 'true');
+
+      if (filter === 'selected') {
+        gridSel.removeAttribute('hidden');
+        gridProj.setAttribute('hidden', '');
+      } else {
+        gridSel.setAttribute('hidden', '');
+        gridProj.removeAttribute('hidden');
+      }
+    });
+  });
+</script>
+
+
+<style>
+
+/* ── PAGE HEADER ───────────────────────────────────────────── */
+
+.page-header {
+  padding: clamp(8rem, 14vw, 14rem) 2.25rem 0;
+}
+
+.header-inner {
+  margin-bottom: 1.25rem;
+}
+
+.header-label {
+  font-family: 'Instrument Serif', 'Times New Roman', serif;
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(3rem, 8vw, 7.5rem);
+  line-height: 1;
+  letter-spacing: -0.025em;
+  color: #fff;
+}
+
+.header-rule {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.08);
+  margin-bottom: clamp(2rem, 4vw, 4rem);
+}
+
+
+/* ── FILTER BAR ────────────────────────────────────────────── */
+
+.filter-bar {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  padding: 0 2.25rem clamp(2.5rem, 4vw, 4rem);
+}
+
+.filter-btn {
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 0.5625rem;
+  letter-spacing: 0.42em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.28);
+  padding-left: 0.42em;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: color 0.18s ease;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.filter-btn:hover {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.filter-btn[aria-pressed="true"] {
+  color: rgba(255, 255, 255, 0.95);
+}
+
+.filter-sep {
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 0.45rem;
+  color: rgba(255, 255, 255, 0.14);
+}
+
+
+/* ── WORK GRID ─────────────────────────────────────────────── */
+
+.grid-section {
+  padding: 0 2.25rem;
+}
+
+.work-grid {
+  columns: 1;
+  column-gap: clamp(1rem, 2vw, 2rem);
+}
+
+@media (min-width: 640px) {
+  .work-grid {
+    columns: 2;
+  }
+}
+
+@media (min-width: 1200px) {
+  .work-grid {
+    columns: 3;
+  }
+}
+
+.work-item {
+  break-inside: avoid;
+  margin: 0;
+  padding-bottom: clamp(1rem, 2vw, 2rem);
+  display: block;
+}
+
+/* ── Static items (Selected Work) — no link, no overlay ── */
+.work-item--static .item-img-wrap {
+  position: relative;
+  overflow: hidden;
+  display: block;
+  background: #0a0a0a;
+}
+
+.work-item--static .item-img {
+  display: block;
+  width: 100%;
+  height: auto;
+  /* Very slow, very subtle scale — meditative, not flashy */
+  transition: transform 2s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              opacity 0.4s ease;
+}
+
+.work-item--static:hover .item-img {
+  transform: scale(1.018);
+}
+
+/* ── Linked items (Projects) — clickable with overlay ── */
+.item-link {
+  display: block;
+  position: relative;
+  overflow: hidden;
+}
+
+.work-item--linked .item-img-wrap {
+  position: relative;
+  overflow: hidden;
+  display: block;
+  background: #0a0a0a;
+}
+
+.work-item--linked .item-img {
+  display: block;
+  width: 100%;
+  height: auto;
+  transition: transform 1.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.item-link:hover .item-img {
+  transform: scale(1.03);
+}
+
+.item-placeholder {
+  width: 100%;
+  aspect-ratio: 2 / 3;
+  background: #111;
+}
+
+/* ── Hover overlay — projects only ── */
+.item-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.72) 0%,
+    rgba(0, 0, 0, 0.04) 45%,
+    transparent 70%
+  );
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 1.25rem;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.item-link:hover .item-overlay {
+  opacity: 1;
+}
+
+.overlay-title {
+  font-family: 'Instrument Serif', 'Times New Roman', serif;
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(1rem, 1.8vw, 1.5rem);
+  line-height: 1.1;
+  color: #fff;
+  letter-spacing: -0.01em;
+}
+
+
+/* ── PAGE REST ─────────────────────────────────────────────── */
+
+.page-rest {
+  height: clamp(6rem, 10vw, 12rem);
+}
+
+
+/* ── MOBILE ─────────────────────────────────────────────────── */
+
+@media (max-width: 639px) {
+  .page-header {
+    padding-inline: 1.25rem;
+  }
+
+  .filter-bar {
+    padding-inline: 1.25rem;
+    gap: 1rem;
+  }
+
+  .grid-section {
+    padding-inline: 1.25rem;
+  }
+}
+
+</style>

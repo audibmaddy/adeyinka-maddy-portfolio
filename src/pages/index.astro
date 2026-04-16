@@ -1,17 +1,478 @@
 ---
+/**
+ * Homepage
+ *
+ * Hero:   Full-viewport typographic statement.
+ *         Name dominates. Bottom caption bar (michaelclarke reference).
+ *
+ * Teaser: alexgeddes/tristanclausen layout — image fills ~80% of viewport
+ *         width, text is a narrow annotation column (not a wide panel).
+ *         Meditative, image-dominant, much more negative space.
+ */
+import Layout from '../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
 
+// ── Series content ────────────────────────────────────────────
+const seriesEntries  = await getCollection('series');
+const featured       = seriesEntries.find(s => s.data.slug === 'fordham-road')
+                       ?? seriesEntries[0];
+
+// Pull the first true narrative paragraph from body (not heading)
+const excerpt = (() => {
+  if (!featured?.body) return featured?.data.description ?? '';
+  const para = featured.body
+    .split('\n')
+    .map(l => l.trim())
+    .find(l => l.length > 40 && !l.startsWith('#'));
+  if (!para) return featured.data.description;
+  // Hard limit — narrow text column, keep it tight
+  return para.length > 220 ? para.slice(0, 220) + '\u2026' : para;
+})();
+
+// Direct import — lets Astro optimise + generate responsive srcset
+import fordhamHero from '../content/series/fordham-road/media/hero.webp';
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<Layout
+  title="Adeyinka Maddy"
+  description="Adeyinka Maddy — Photographer & Creative Director. New York."
+>
+
+<!-- ═══════════════════════════════════════════════════════════
+     HERO
+     ─────
+     Full viewport. Name dominates the vertical centre.
+     Bottom caption bar anchors the section (michaelclarke reference).
+     No scroll indicators — the caption bar is the cue.
+════════════════════════════════════════════════════════════ -->
+<section class="hero" aria-label="Introduction">
+
+  <div class="hero-name" aria-label="Adeyinka Maddy">
+    <span class="name-first" aria-hidden="true">Adeyinka</span>
+    <span class="name-last"  aria-hidden="true">Maddy</span>
+  </div>
+
+  <!--
+    Caption bar — thin rule + two metadata lines.
+    Positioned absolute at the bottom of the hero.
+    Mirrors michaelclarke.work's "Director / Photographer / New York / 2026".
+  -->
+  <div class="hero-caption" aria-hidden="true">
+    <span>Photographer&ensp;&middot;&ensp;Project Manager</span>
+    <span>New York&ensp;&middot;&ensp;2025</span>
+  </div>
+
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     SERIES TEASER
+     ─────────────
+     alexgeddes/tristanclausen layout:
+       • Image fills ~80 % of viewport width, 90 vh+ tall
+       • Text is a narrow ANNOTATION COLUMN (not a wide panel)
+       • Silence / negative space before the image appears
+       • Only one series highlighted per homepage visit
+════════════════════════════════════════════════════════════ -->
+{featured && (
+  <section class="teaser" aria-label={`Featured series: ${featured.data.title}`}>
+
+    <!--
+      Chapter marker — very quiet, gives editorial rhythm
+      before the image hits (henryschwabe reference).
+    -->
+    <div class="chapter-marker" aria-hidden="true">
+      <span class="chapter-label">Series</span>
+      <span class="chapter-rule"></span>
+    </div>
+
+    <!-- Main image + annotation grid -->
+    <div class="teaser-grid">
+
+      <!-- ── Image column (80 % desktop, full-width mobile) ── -->
+      <a
+        href={`/series/${featured.data.slug}`}
+        class="teaser-img-col"
+        aria-label={`Open ${featured.data.title}`}
+        tabindex="-1"
+      >
+        <Image
+          src={fordhamHero}
+          alt={`${featured.data.title} — hero image`}
+          class="teaser-img"
+          loading="eager"
+          widths={[900, 1400, 1800, 2400]}
+          sizes="(max-width: 767px) 100vw, 80vw"
+        />
+      </a>
+
+      <!-- ── Annotation column (20 % desktop) ── -->
+      <div class="teaser-col" role="complementary">
+
+        <div class="col-top">
+          <span class="col-index">01</span>
+          <div  class="col-rule" aria-hidden="true"></div>
+          <h2  class="col-title">{featured.data.title}</h2>
+          <p   class="col-excerpt">{excerpt}</p>
+        </div>
+
+        <a
+          href={`/series/${featured.data.slug}`}
+          class="col-link"
+          aria-label={`View full ${featured.data.title} series`}
+        >
+          View Series
+          <span class="col-arrow" aria-hidden="true">&#x2192;</span>
+        </a>
+
+      </div>
+
+    </div>
+
+    <!--
+      Post-teaser spacer — generous negative space below the image
+      before the footer. morganpilcher reference: meditative pace.
+    -->
+    <div class="teaser-rest" aria-hidden="true"></div>
+
+  </section>
+)}
+
+</Layout>
+
+<!-- ═══════════════════════════════════════════════════════════
+     STYLES
+════════════════════════════════════════════════════════════ -->
+<style>
+
+/* ── HERO ──────────────────────────────────────────────────── */
+
+.hero {
+  position: relative;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  /* Top clears fixed nav; bottom reserved for caption bar */
+  padding: 8rem 2.25rem 7rem;
+  overflow: hidden;
+}
+
+/* Very faint grain — keeps the pure black from feeling sterile */
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 0;
+}
+
+.hero-name {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  /* Tight leading — the two lines read as a single mass */
+  line-height: 0.86;
+  /* Very subtle left offset for visual rhythm */
+  padding-left: clamp(0rem, 1vw, 1.5rem);
+}
+
+/* "Adeyinka" — quieter, sets up the last name */
+.name-first {
+  display: block;
+  font-family: 'Instrument Serif', 'Times New Roman', serif;
+  font-style: italic;
+  font-weight: 400;
+  /*
+    Size: large enough to feel substantial,
+    small enough that "Maddy" dominates clearly.
+    At 1440 px → 122 px. At 390 px → 35 px.
+  */
+  font-size: clamp(2.125rem, 8.5vw, 11rem);
+  color: rgba(255, 255, 255, 0.36);
+  letter-spacing: -0.015em;
+  animation: revealUp 1s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* "Maddy" — the statement. As wide as the viewport will allow. */
+.name-last {
+  display: block;
+  font-family: 'Instrument Serif', 'Times New Roman', serif;
+  font-style: italic;
+  font-weight: 400;
+  /*
+    Size: at 1440 px → 288 px.
+    "Maddy" at 288 px spans ≈ 68 % of viewport width — dramatic.
+    At 390 px → 85 px → spans ≈ 74 % — still bold on mobile.
+  */
+  font-size: clamp(5rem, 20vw, 26rem);
+  color: #fff;
+  letter-spacing: -0.03em;
+  animation: revealUp 1s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both;
+}
+
+/*
+  Caption bar — michaelclarke reference.
+  Thin rule above. Discipline left, location right.
+  Absolute so it doesn't push layout.
+*/
+.hero-caption {
+  position: absolute;
+  inset-inline: 2.25rem;
+  bottom: 2.25rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 0.875rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  animation: revealUp 1s cubic-bezier(0.16, 1, 0.3, 1) 0.35s both;
+  z-index: 1;
+}
+
+.hero-caption span {
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 0.5625rem; /* 9 px */
+  letter-spacing: 0.38em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.38);
+  /* Compensate for optical shift from letter-spacing */
+  padding-left: 0.38em;
+}
+
+
+/* ── SERIES TEASER ─────────────────────────────────────────── */
+
+.teaser {
+  /* No top padding — scrolling immediately reveals chapter marker */
+}
+
+/*
+  Chapter marker — henryschwabe institutional feel.
+  "SERIES" label + thin extending rule.
+  Quiet. Just enough to signal a new section.
+*/
+.chapter-marker {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  padding: 5rem 2.25rem 2.75rem;
+}
+
+.chapter-label {
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 0.5625rem;
+  letter-spacing: 0.5em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.2);
+  /* Compensate for letter-spacing */
+  padding-left: 0.5em;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.chapter-rule {
+  display: block;
+  flex: 1;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.07);
+}
+
+/*
+  The grid: alexgeddes/tristanclausen layout.
+  80 % image / 20 % annotation column.
+  Image is left-flush (no left padding on the section).
+*/
+.teaser-grid {
+  display: grid;
+  grid-template-columns: 1fr; /* mobile: stacked */
+}
+
+@media (min-width: 768px) {
+  .teaser-grid {
+    grid-template-columns: 80fr 20fr;
+    min-height: 90vh;
+    align-items: stretch;
+  }
+}
+
+/* ── Image column ── */
+.teaser-img-col {
+  display: block;
+  position: relative;
+  overflow: hidden;
+  /* Mobile: portrait crop */
+  aspect-ratio: 4 / 5;
+  cursor: pointer;
+}
+
+@media (min-width: 768px) {
+  .teaser-img-col {
+    aspect-ratio: unset; /* stretch to grid row height */
+  }
+}
+
+.teaser-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  display: block;
+  transition: transform 1.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.teaser-img-col:hover .teaser-img {
+  transform: scale(1.025);
+}
+
+/* ── Annotation column (20 %) ── */
+.teaser-col {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* top: meta / bottom: link */
+  padding: 2.5rem 1.75rem 2.5rem 1.75rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.07); /* mobile separator */
+}
+
+@media (min-width: 768px) {
+  .teaser-col {
+    padding: 3rem 2rem 3rem 2rem;
+    border-top: none;
+    border-left: 1px solid rgba(255, 255, 255, 0.06);
+  }
+}
+
+.col-top {
+  display: flex;
+  flex-direction: column;
+}
+
+/*
+  Series index — tiny, tracked, at the very top of the column.
+  Gives the annotation column an editorial/catalogue feel.
+*/
+.col-index {
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 0.5rem; /* 8 px */
+  letter-spacing: 0.55em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.25);
+  padding-left: 0.55em;
+  margin-bottom: 0.875rem;
+}
+
+.col-rule {
+  width: 1.5rem;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.15);
+  margin-bottom: 1.25rem;
+}
+
+/*
+  Series title — Instrument Serif italic.
+  Sized to feel substantial within the narrow column
+  without fighting the image.
+*/
+.col-title {
+  font-family: 'Instrument Serif', 'Times New Roman', serif;
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(1.625rem, 2.8vw, 2.5rem);
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+  color: #fff;
+  margin-bottom: 1.5rem;
+}
+
+/*
+  Excerpt — small, quiet, lets the image speak.
+  Tight line-height matches the meditative pace.
+*/
+.col-excerpt {
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 0.75rem; /* 12 px */
+  line-height: 1.72;
+  color: rgba(255, 255, 255, 0.42);
+  /* morganpilcher reference: deliberate, unhurried reading */
+}
+
+/*
+  Link — at the bottom of the column (justify-content: space-between).
+  Lowercase. No underline. Just arrow + opacity.
+*/
+.col-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.625rem;
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 0.625rem; /* 10 px */
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.45);
+  padding-left: 0.3em;
+  margin-top: 2.5rem;
+  transition: color 0.2s ease, gap 0.2s ease;
+}
+
+.col-link:hover {
+  color: rgba(255, 255, 255, 0.9);
+  gap: 1rem;
+}
+
+.col-arrow {
+  transition: transform 0.2s ease;
+  font-size: 0.875rem;
+}
+
+.col-link:hover .col-arrow {
+  transform: translateX(3px);
+}
+
+/*
+  Post-teaser rest space — morganpilcher reference.
+  Generous breathing room before the ABM footer.
+  The silence is part of the design.
+*/
+.teaser-rest {
+  height: clamp(5rem, 10vw, 9rem);
+}
+
+
+/* ── ANIMATIONS ────────────────────────────────────────────── */
+
+@keyframes revealUp {
+  from {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+/* ── MOBILE OVERRIDES ──────────────────────────────────────── */
+
+@media (max-width: 639px) {
+  .hero {
+    padding: 7.5rem 1.25rem 6rem;
+  }
+
+  .hero-caption {
+    inset-inline: 1.25rem;
+    bottom: 1.75rem;
+  }
+
+  .chapter-marker {
+    padding: 4rem 1.25rem 2rem;
+  }
+
+  .teaser-col {
+    padding: 2.5rem 1.25rem;
+  }
+}
+
+</style>

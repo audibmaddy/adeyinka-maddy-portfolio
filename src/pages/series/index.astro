@@ -1,0 +1,332 @@
+---
+/**
+ * Series index — /series
+ *
+ * Layout references:
+ *   henryschwabe — institutional confidence, bold scale
+ *   alexgeddes   — image-dominant, generous negative space
+ *   morganpilcher — deliberate, unhurried pace between entries
+ *
+ * Grid: two columns on desktop, single on mobile.
+ * Each card: cover image + quiet metadata below.
+ * Page header: minimal — just the section label and a thin rule.
+ */
+import Layout from '../../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+const allSeries = await getCollection('series');
+
+// Sort newest-first
+const sorted = allSeries.sort(
+  (a, b) => b.data.date.getTime() - a.data.date.getTime()
+);
+
+// ── Cover image resolution ────────────────────────────────────
+// We import all series hero/cover images eagerly so Astro can
+// generate responsive srcsets at build time.
+const allCovers = import.meta.glob<{ default: ImageMetadata }>(
+  [
+    '/src/content/series/*/media/*.jpg',
+    '/src/content/series/*/media/*.JPG',
+    '/src/content/series/*/media/*.jpeg',
+    '/src/content/series/*/media/*.JPEG',
+    '/src/content/series/*/media/*.webp',
+    '/src/content/series/*/media/*.WEBP',
+    '/src/content/series/*/media/*.png',
+    '/src/content/series/*/media/*.PNG',
+  ],
+  { eager: true }
+);
+
+// For each series, resolve the cover image from its coverImage frontmatter.
+// coverImage is stored as a relative path like "./media/hero.webp".
+// We match it against the glob map using the series directory name.
+function resolveCover(seriesId: string, coverImagePath: string): ImageMetadata | null {
+  const dir = seriesId.split('/')[0]; // "fordham-road"
+  const filename = coverImagePath.split('/').pop(); // "hero.webp"
+  if (!filename) return null;
+
+  for (const [path, mod] of Object.entries(allCovers)) {
+    const segments = path.split('/');
+    const idx = segments.indexOf('series');
+    if (idx !== -1 && segments[idx + 1] === dir) {
+      if (segments[segments.length - 1] === filename && mod.default) {
+        return mod.default;
+      }
+    }
+  }
+  return null;
+}
+
+const cards = sorted.map(entry => ({
+  entry,
+  cover: resolveCover(entry.id, entry.data.coverImage),
+  year:  entry.data.date.getFullYear(),
+}));
+---
+
+<Layout
+  title="Series"
+  description="Documentary and editorial photo series by Adeyinka Maddy."
+>
+
+<!-- ═══════════════════════════════════════════════════════════
+     PAGE HEADER
+     A quiet editorial header — just a category label, a thin
+     rule, and the count. henryschwabe institutional register.
+════════════════════════════════════════════════════════════ -->
+<section class="page-header" aria-label="Series collection">
+  <div class="header-inner">
+    <span class="header-label">Series</span>
+    <span class="header-count">{cards.length.toString().padStart(2, '0')}</span>
+  </div>
+  <div class="header-rule" aria-hidden="true"></div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     SERIES GRID
+     Desktop: 2-column asymmetric (offset second column down).
+     Mobile: single column.
+     Each card: cover image → title + meta below.
+     Hover: very slow image scale — henryschwabe weight.
+════════════════════════════════════════════════════════════ -->
+<section class="grid-section" aria-label="All series">
+  <ul class="series-grid" role="list">
+    {cards.map(({ entry, cover, year }, i) => (
+      <li class:list={['series-card', { 'card-offset': i % 2 === 1 }]}>
+        <a
+          href={`/series/${entry.data.slug}`}
+          class="card-link"
+          aria-label={`Open ${entry.data.title}`}
+        >
+          <!-- Cover image -->
+          <div class="card-img-wrap">
+            {cover ? (
+              <Image
+                src={cover}
+                alt={`${entry.data.title} — cover`}
+                class="card-img"
+                loading={i < 2 ? 'eager' : 'lazy'}
+                widths={[600, 900, 1200]}
+                sizes="(max-width: 767px) 100vw, 48vw"
+              />
+            ) : (
+              <!-- Fallback: plain black placeholder if image missing -->
+              <div class="card-img-placeholder" aria-hidden="true"></div>
+            )}
+          </div>
+
+          <!-- Metadata -->
+          <div class="card-meta">
+            <div class="card-tags">
+              {entry.data.tags.map(tag => (
+                <span class="card-tag">{tag}</span>
+              ))}
+              <span class="card-sep" aria-hidden="true">/</span>
+              <span class="card-year">{year}</span>
+            </div>
+            <h2 class="card-title">{entry.data.title}</h2>
+          </div>
+        </a>
+      </li>
+    ))}
+  </ul>
+</section>
+
+<!-- Meditative bottom rest -->
+<div class="page-rest" aria-hidden="true"></div>
+
+</Layout>
+
+
+<style>
+
+/* ── PAGE HEADER ───────────────────────────────────────────── */
+
+.page-header {
+  padding: clamp(8rem, 14vw, 14rem) 2.25rem 0;
+}
+
+.header-inner {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+}
+
+.header-label {
+  font-family: 'Instrument Serif', 'Times New Roman', serif;
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(3rem, 8vw, 7.5rem);
+  line-height: 1;
+  letter-spacing: -0.025em;
+  color: #fff;
+}
+
+.header-count {
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 0.5625rem;
+  letter-spacing: 0.45em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.22);
+  padding-left: 0.45em;
+  align-self: flex-end;
+  padding-bottom: 0.5em;
+}
+
+.header-rule {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.08);
+  margin-bottom: clamp(3rem, 6vw, 6rem);
+}
+
+
+/* ── SERIES GRID ────────────────────────────────────────────── */
+
+.grid-section {
+  padding: 0 2.25rem;
+}
+
+.series-grid {
+  list-style: none;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(3.5rem, 6vw, 7rem);
+}
+
+@media (min-width: 768px) {
+  .series-grid {
+    /*
+      Two equal columns. Odd-indexed cards are nudged down
+      via margin-top to create asymmetric rhythm.
+    */
+    grid-template-columns: repeat(2, 1fr);
+    gap: clamp(2rem, 3vw, 3.5rem) clamp(2.5rem, 4vw, 5rem);
+    align-items: start;
+  }
+}
+
+/* ── Card ── */
+.series-card {
+  /* Isolation so the img transform stays contained */
+}
+
+/*
+  Offset every second card down by ~10 vh — staggered grid,
+  alexgeddes asymmetric editorial feel.
+  Only on desktop where the 2-col grid is active.
+*/
+@media (min-width: 768px) {
+  .card-offset {
+    margin-top: clamp(6rem, 10vw, 12rem);
+  }
+}
+
+.card-link {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/* ── Cover image wrap ── */
+.card-img-wrap {
+  position: relative;
+  overflow: hidden;
+  /*
+    3:4 portrait — photo-natural ratio, room for the image
+    to breathe. Consistent across all cards.
+  */
+  aspect-ratio: 3 / 4;
+  background: #0a0a0a;
+  margin-bottom: 1.5rem;
+}
+
+.card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  display: block;
+  transition: transform 1.6s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              opacity 0.3s ease;
+}
+
+.card-link:hover .card-img {
+  transform: scale(1.03);
+}
+
+.card-img-placeholder {
+  width: 100%;
+  height: 100%;
+  background: #111;
+}
+
+/* ── Metadata ── */
+.card-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+}
+
+.card-tags {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+}
+
+.card-tag,
+.card-year {
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 0.5rem;
+  letter-spacing: 0.45em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.28);
+  padding-left: 0.45em;
+}
+
+.card-sep {
+  color: rgba(255, 255, 255, 0.14);
+  font-size: 0.45rem;
+}
+
+.card-title {
+  font-family: 'Instrument Serif', 'Times New Roman', serif;
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(1.5rem, 3.5vw, 3rem);
+  line-height: 1.0;
+  letter-spacing: -0.02em;
+  color: #fff;
+  transition: opacity 0.2s ease;
+}
+
+.card-link:hover .card-title {
+  opacity: 0.72;
+}
+
+
+/* ── PAGE REST ─────────────────────────────────────────────── */
+
+.page-rest {
+  height: clamp(6rem, 10vw, 12rem);
+}
+
+
+/* ── MOBILE ─────────────────────────────────────────────────── */
+
+@media (max-width: 639px) {
+  .page-header {
+    padding-inline: 1.25rem;
+  }
+
+  .grid-section {
+    padding-inline: 1.25rem;
+  }
+}
+
+</style>

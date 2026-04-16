@@ -1,0 +1,144 @@
+---
+/**
+ * Navigation — cathydolle.com reference
+ *
+ * Always-transparent. Never adds background on scroll.
+ * Artist mark (three circles) on the left. Small uppercase links on the right.
+ * Hover is opacity-only — no underlines, no color shifts, no chrome.
+ * Text-shadow gives legibility over images without adding visible UI.
+ *
+ * Active state: /projects/* and /work/* both highlight "Work".
+ */
+const links = [
+  { href: '/work',    label: 'Work'    },
+  { href: '/series',  label: 'Series'  },
+  { href: '/about',   label: 'About'   },
+  { href: '/contact', label: 'Contact' },
+];
+
+const pathname = Astro.url.pathname;
+
+function isActive(href: string): boolean {
+  if (href === '/work') {
+    // Work is active for /work, /work/*, and /projects/*
+    return pathname === '/work'
+      || pathname.startsWith('/work/')
+      || pathname.startsWith('/projects/');
+  }
+  return pathname === href || pathname.startsWith(href + '/');
+}
+---
+
+<header class="nav" role="banner">
+  <!-- Signature mark -->
+  <a href="/" class="nav-mark" aria-label="Adeyinka Maddy — Home">
+    <svg
+      viewBox="190 147 232 498"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <circle cx="306" cy="263" r="101" stroke="currentColor" stroke-width="22" />
+      <circle cx="306" cy="395" r="101" stroke="currentColor" stroke-width="22" />
+      <circle cx="306" cy="529" r="101" stroke="currentColor" stroke-width="22" />
+    </svg>
+  </a>
+
+  <!-- Links -->
+  <nav aria-label="Primary navigation">
+    <ul role="list">
+      {links.map(({ href, label }) => (
+        <li>
+          <a
+            href={href}
+            class:list={[{ active: isActive(href) }]}
+            aria-current={pathname === href ? 'page' : undefined}
+          >
+            {label}
+          </a>
+        </li>
+      ))}
+    </ul>
+  </nav>
+</header>
+
+<style>
+  /* ─── Shell — always transparent, never changes ─── */
+  .nav {
+    position: fixed;
+    inset-block-start: 0;
+    inset-inline: 0;
+    z-index: 200;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.375rem 2rem;
+    isolation: isolate;
+  }
+
+  /* ─── Signature mark ─── */
+  .nav-mark {
+    display: flex;
+    align-items: center;
+    color: #fff;
+    opacity: 0.72;
+    transition: opacity 0.2s ease;
+    filter: drop-shadow(0 1px 6px rgba(0, 0, 0, 0.45));
+  }
+
+  .nav-mark:hover {
+    opacity: 1;
+  }
+
+  .nav-mark svg {
+    height: 26px;
+    width: auto;
+    display: block;
+  }
+
+  /* ─── Link list ─── */
+  nav ul {
+    display: flex;
+    align-items: center;
+    gap: 2.5rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  nav a {
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 0.6875rem;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.48);
+    transition: color 0.18s ease;
+    text-shadow: 0 1px 6px rgba(0, 0, 0, 0.5);
+  }
+
+  nav a:hover,
+  nav a.active {
+    color: rgba(255, 255, 255, 0.95);
+  }
+
+  /* ─── Mobile ─── */
+  @media (max-width: 639px) {
+    .nav {
+      padding: 1.25rem 1.25rem;
+    }
+
+    .nav-mark svg {
+      height: 22px;
+    }
+
+    nav ul {
+      gap: 1.5rem;
+    }
+
+    nav a {
+      font-size: 0.625rem;
+      letter-spacing: 0.22em;
+    }
+  }
+</style>

@@ -1,0 +1,324 @@
+---
+/**
+ * About — /about
+ *
+ * Layout references:
+ *   michaelclarke — calm, text-forward, editorial pace
+ *   henryschwabe  — confident hierarchy, institutional weight
+ *   morganpilcher — generous vertical breathing room
+ *
+ * Structure:
+ *   1. Large italic name header + thin rule
+ *   2. Two-column: headshot LEFT, bio RIGHT
+ *   3. Info grid: disciplines / based / clients (with links)
+ */
+import Layout from '../layouts/Layout.astro';
+import { Image } from 'astro:assets';
+import headshot from '../assets/branding/media/headshot.jpg';
+---
+
+<Layout
+  title="About"
+  description="Adeyinka Maddy — Photographer, videographer, and project manager based in Queens, NY."
+>
+
+<!-- ═══════════════════════════════════════════════════════════
+     HEADER
+════════════════════════════════════════════════════════════ -->
+<section class="page-header" aria-label="Introduction">
+  <div class="header-rule" aria-hidden="true"></div>
+  <h1 class="header-name">Adeyinka<br />Maddy</h1>
+  <div class="header-role">
+    <span>Photographer</span>
+    <span class="role-sep" aria-hidden="true">/</span>
+    <span>Project Manager</span>
+    <span class="role-sep" aria-hidden="true">/</span>
+    <span>Queens, NY</span>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     PORTRAIT + BIO
+     Left: headshot, full portrait.
+     Right: bio — three short punchy paragraphs.
+════════════════════════════════════════════════════════════ -->
+<section class="portrait-section" aria-label="Portrait and biography">
+
+  <div class="portrait-col">
+    <Image
+      src={headshot}
+      alt="Adeyinka Maddy"
+      class="headshot"
+      loading="eager"
+      widths={[600, 900, 1200]}
+      sizes="(max-width: 767px) 100vw, 45vw"
+    />
+  </div>
+
+  <div class="bio-col">
+    <p>
+      Adeyinka Maddy makes things. Photos, videos, campaigns,
+      excuses to stay busy.
+    </p>
+    <p>
+      NYC-based, Sacramento-raised. A photographer and videographer
+      by practice, a project manager by necessity, and a filmmaker
+      by conviction.
+    </p>
+    <p>
+      Always in motion. Rarely satisfied, which is why the work
+      keeps getting better.
+    </p>
+  </div>
+
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     INFO GRID
+     Three columns separated by thin rules.
+     henryschwabe institutional register.
+════════════════════════════════════════════════════════════ -->
+<section class="info-grid" aria-label="Disciplines and information">
+
+  <div class="info-block">
+    <span class="info-label">Disciplines</span>
+    <ul class="info-list" role="list">
+      <li>Photography</li>
+      <li>Videography</li>
+      <li>Project Management</li>
+      <li>Creative Direction</li>
+      <li>Campaign Production</li>
+    </ul>
+  </div>
+
+  <div class="info-block">
+    <span class="info-label">Based</span>
+    <ul class="info-list" role="list">
+      <li>Queens, New York</li>
+    </ul>
+  </div>
+
+  <div class="info-block">
+    <span class="info-label">Selected Clients</span>
+    <ul class="info-list info-list--linked" role="list">
+      <li>
+        <a href="/projects/the-residency-airbnb" class="client-link">Airbnb</a>
+      </li>
+      <li>
+        <a href="/projects/uber-brief" class="client-link">Uber</a>
+      </li>
+      <li>
+        <a href="/projects/oof-campaign-omnicom" class="client-link">Omnicom Health</a>
+      </li>
+      <li>Independent</li>
+    </ul>
+  </div>
+
+</section>
+
+<div class="page-rest" aria-hidden="true"></div>
+
+</Layout>
+
+
+<style>
+
+/* ── PAGE HEADER ───────────────────────────────────────────── */
+
+.page-header {
+  padding: clamp(8rem, 14vw, 14rem) 2.25rem 0;
+}
+
+.header-rule {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.08);
+  margin-bottom: clamp(2.5rem, 4vw, 4rem);
+}
+
+.header-name {
+  font-family: 'Instrument Serif', 'Times New Roman', serif;
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(3.5rem, 10vw, 11rem);
+  line-height: 0.92;
+  letter-spacing: -0.03em;
+  color: #fff;
+  margin-bottom: 2rem;
+}
+
+.header-role {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  flex-wrap: wrap;
+}
+
+.header-role span {
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 0.5625rem;
+  letter-spacing: 0.42em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.38);
+  padding-left: 0.42em;
+}
+
+.role-sep {
+  color: rgba(255, 255, 255, 0.14) !important;
+  font-size: 0.45rem !important;
+  letter-spacing: 0 !important;
+  padding-left: 0 !important;
+}
+
+
+/* ── PORTRAIT + BIO ────────────────────────────────────────── */
+
+.portrait-section {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(3rem, 5vw, 6rem);
+  padding: clamp(5rem, 8vw, 9rem) 2.25rem clamp(4rem, 6vw, 7rem);
+}
+
+@media (min-width: 768px) {
+  .portrait-section {
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+  }
+}
+
+/* ── Headshot ── */
+.portrait-col {
+  position: relative;
+  overflow: hidden;
+}
+
+.headshot {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: cover;
+  object-position: center top;
+}
+
+/* ── Bio ── */
+.bio-col {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1.75rem;
+}
+
+@media (min-width: 768px) {
+  .bio-col {
+    padding-top: clamp(1rem, 4vw, 5rem);
+  }
+}
+
+.bio-col p {
+  font-family: 'Times New Roman', Times, serif;
+  font-size: clamp(1rem, 1.4vw, 1.25rem);
+  line-height: 1.8;
+  color: rgba(255, 255, 255, 0.62);
+}
+
+
+/* ── INFO GRID ─────────────────────────────────────────────── */
+
+.info-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+  margin: 0 2.25rem;
+}
+
+@media (min-width: 640px) {
+  .info-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.info-block {
+  padding: clamp(2rem, 4vw, 3.5rem) 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+@media (min-width: 640px) {
+  .info-block {
+    border-bottom: none;
+    border-right: 1px solid rgba(255, 255, 255, 0.07);
+    padding-right: 2.5rem;
+  }
+
+  .info-block:not(:first-child) {
+    padding-left: 2.5rem;
+  }
+
+  .info-block:last-child {
+    border-right: none;
+  }
+}
+
+.info-label {
+  display: block;
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 0.5rem;
+  letter-spacing: 0.5em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.22);
+  padding-left: 0.5em;
+  margin-bottom: 1.5rem;
+}
+
+.info-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+}
+
+.info-list li {
+  font-family: 'Times New Roman', Times, serif;
+  font-size: clamp(0.8125rem, 1vw, 0.9375rem);
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.client-link {
+  color: rgba(255, 255, 255, 0.55);
+  transition: color 0.18s ease;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  padding-bottom: 0.05em;
+}
+
+.client-link:hover {
+  color: rgba(255, 255, 255, 0.9);
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+
+/* ── PAGE REST ─────────────────────────────────────────────── */
+
+.page-rest {
+  height: clamp(6rem, 10vw, 12rem);
+}
+
+
+/* ── MOBILE ─────────────────────────────────────────────────── */
+
+@media (max-width: 639px) {
+  .page-header {
+    padding-inline: 1.25rem;
+  }
+
+  .portrait-section {
+    padding-inline: 1.25rem;
+  }
+
+  .info-grid {
+    margin-inline: 1.25rem;
+  }
+}
+
+</style>
