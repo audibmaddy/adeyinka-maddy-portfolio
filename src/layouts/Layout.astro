@@ -19,7 +19,10 @@ const {
   description = 'Adeyinka Maddy — Creative. New York.',
 } = Astro.props;
 
-const pageTitle = 'Adeyinka Maddy — Creative. New York.';
+const pageTitle    = 'Adeyinka Maddy — Creative. New York.';
+const ogTitle      = 'Adeyinka Maddy — Creative. New York.';
+const ogDescription = description;
+const canonicalURL  = new URL(Astro.url.pathname, 'https://abmwork.netlify.app');
 ---
 
 <!DOCTYPE html>
@@ -27,8 +30,29 @@ const pageTitle = 'Adeyinka Maddy — Creative. New York.';
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content={description} />
+    <meta name="description" content={ogDescription} />
     <title>{pageTitle}</title>
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href={canonicalURL} />
+
+    <!-- Open Graph (Facebook, LinkedIn, iMessage, Slack, etc.) -->
+    <meta property="og:type"        content="website" />
+    <meta property="og:site_name"   content="Adeyinka Maddy" />
+    <meta property="og:url"         content={canonicalURL} />
+    <meta property="og:title"       content={ogTitle} />
+    <meta property="og:description" content={ogDescription} />
+    <meta property="og:image"       content="https://abmwork.netlify.app/og-image.jpg" />
+    <meta property="og:image:width"  content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt"   content="Adeyinka Maddy — Creative. New York." />
+
+    <!-- Twitter / X card -->
+    <meta name="twitter:card"        content="summary_large_image" />
+    <meta name="twitter:title"       content={ogTitle} />
+    <meta name="twitter:description" content={ogDescription} />
+    <meta name="twitter:image"       content="https://abmwork.netlify.app/og-image.jpg" />
+
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" href="/favicon.ico" />
 
