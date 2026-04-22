@@ -69,6 +69,15 @@ const canonicalURL  = new URL(Astro.url.pathname, 'https://abmwork.netlify.app')
   </head>
 
   <body>
+    <!-- Custom cursor — logo mark on hover over clickable elements -->
+    <div id="cursor" aria-hidden="true">
+      <svg viewBox="190 147 232 498" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="306" cy="263" r="101" stroke="currentColor" stroke-width="28"/>
+        <circle cx="306" cy="395" r="101" stroke="currentColor" stroke-width="28"/>
+        <circle cx="306" cy="529" r="101" stroke="currentColor" stroke-width="28"/>
+      </svg>
+    </div>
+
     <!--
       Fixed top gradient visor — renders below the nav (z-index: 100)
       but above page content. Keeps the nav links legible when
@@ -90,6 +99,31 @@ const canonicalURL  = new URL(Astro.url.pathname, 'https://abmwork.netlify.app')
     <footer class="site-footer" aria-label="Site footer">
       <span class="abm">ABM</span>
     </footer>
+
+    <script>
+      // Custom cursor — only on fine-pointer (mouse) devices
+      if (window.matchMedia('(pointer: fine)').matches) {
+        const cursor = document.getElementById('cursor')!;
+        const CLICKABLE = 'a, button, [role="button"], label[for], select';
+
+        // Track position — set directly for zero lag
+        document.addEventListener('mousemove', (e) => {
+          cursor.style.left = e.clientX + 'px';
+          cursor.style.top  = e.clientY + 'px';
+        }, { passive: true });
+
+        // Show logo when over a clickable element
+        document.addEventListener('mouseover', (e) => {
+          const over = (e.target as Element).closest(CLICKABLE);
+          cursor.classList.toggle('active', !!over);
+        });
+
+        // Hide when mouse leaves the window entirely
+        document.addEventListener('mouseleave', () => {
+          cursor.classList.remove('active');
+        });
+      }
+    </script>
   </body>
 </html>
 
@@ -139,6 +173,39 @@ const canonicalURL  = new URL(Astro.url.pathname, 'https://abmwork.netlify.app')
 </style>
 
 <style>
+  /* ─── Custom cursor ─── */
+  #cursor {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 22px;
+    height: auto;
+    pointer-events: none;
+    z-index: 99999;
+    color: #fff;
+    opacity: 0;
+    transition: opacity 0.18s ease;
+    /* Offset so the top circle aligns with the pointer tip */
+    transform: translate(-50%, -18%);
+    will-change: transform, left, top;
+  }
+
+  #cursor svg {
+    width: 100%;
+    height: auto;
+    display: block;
+    filter: drop-shadow(0 1px 4px rgba(0,0,0,0.5));
+  }
+
+  #cursor.active { opacity: 1; }
+
+  /* Hide default cursor on clickable elements (fine-pointer devices only) */
+  @media (pointer: fine) {
+    a, button, [role="button"], label[for], select {
+      cursor: none;
+    }
+  }
+
   /* ─── Nav visor ─── */
   /*
    * A fixed, non-interactive gradient that fades from
