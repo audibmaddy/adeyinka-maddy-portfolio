@@ -6,5 +6,6 @@ type: "selected"
 tags: ["portrait"]
 coverImage: "./media/hero.webp"
 description: "Portrait of Sal Vulcano"
+label: "Sal Vulcano"
+sublabel: "TV Personality"
 ---
-# Optional short statement

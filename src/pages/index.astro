@@ -2,36 +2,30 @@
 /**
  * Homepage
  *
- * Hero:   Full-viewport typographic statement.
- *         Name dominates. Bottom caption bar (michaelclarke reference).
- *
- * Teaser: alexgeddes/tristanclausen layout — image fills ~80% of viewport
- *         width, text is a narrow annotation column (not a wide panel).
- *         Meditative, image-dominant, much more negative space.
+ * Hero:  Full-viewport typographic statement.
+ * Works: Vertical stack of large 3:2 landscape cards.
+ *        Uber keeps its natural portrait ratio.
  */
 import Layout from '../layouts/Layout.astro';
-import { getCollection } from 'astro:content';
 import { Image } from 'astro:assets';
 
-// ── Series content ────────────────────────────────────────────
-const seriesEntries  = await getCollection('series');
-const featured       = seriesEntries.find(s => s.data.slug === 'fordham-road')
-                       ?? seriesEntries[0];
+import milkshakeCover from '../content/selected-works/milkshake-collective/media/hero.jpg';
+import thirdEyeCover  from '../content/projects/third-eye/media/thumbnail.jpeg';
+import uberCover      from '../content/projects/uber-brief/media/hero.webp';
+import swCover        from '../content/projects/sw-reveal/media/hero.webp';
+import airbnbCover    from '../content/projects/the-residency-airbnb/media/hero.jpg';
+import oofCover       from '../content/projects/oof-campaign-omnicom/media/hero.jpeg';
+import fordhamHero    from '../content/series/fordham-road/media/hero.webp';
 
-// Pull the first true narrative paragraph from body (not heading)
-const excerpt = (() => {
-  if (!featured?.body) return featured?.data.description ?? '';
-  const para = featured.body
-    .split('\n')
-    .map(l => l.trim())
-    .find(l => l.length > 40 && !l.startsWith('#'));
-  if (!para) return featured.data.description;
-  // Hard limit — narrow text column, keep it tight
-  return para.length > 220 ? para.slice(0, 220) + '\u2026' : para;
-})();
-
-// Direct import — lets Astro optimise + generate responsive srcset
-import fordhamHero from '../content/series/fordham-road/media/hero.webp';
+const cards = [
+  { title: 'Milkshake Collective Volume 1',                  href: '/work/milkshake-collective',         cover: milkshakeCover, imgPos: 'center top'    },
+  { title: 'Third Eye x Takeout Popup',                      href: '/projects/third-eye',                cover: thirdEyeCover,  imgPos: 'center top'    },
+  { title: 'Uber Robots take over Philidelphia',             href: '/projects/uber-brief',               cover: uberCover,      imgPos: 'center center' },
+  { title: 'Fordham University Spring Weekend Lineup Reveal',href: '/projects/sw-reveal',                cover: swCover,        imgPos: 'center top'    },
+  { title: 'The Residency by Airbnb',                        href: '/projects/the-residency-airbnb',     cover: airbnbCover,    imgPos: 'center top'    },
+  { title: 'OOF Campaign',                                   href: '/projects/oof-campaign-omnicom',     cover: oofCover,       imgPos: 'center top'    },
+  { title: 'Photography',                                    href: '/work?tab=selected',                 cover: fordhamHero,    imgPos: 'center top'    },
+];
 ---
 
 <Layout
@@ -41,109 +35,58 @@ import fordhamHero from '../content/series/fordham-road/media/hero.webp';
 
 <!-- ═══════════════════════════════════════════════════════════
      HERO
-     ─────
-     Full viewport. Name dominates the vertical centre.
-     Bottom caption bar anchors the section (michaelclarke reference).
-     No scroll indicators — the caption bar is the cue.
 ════════════════════════════════════════════════════════════ -->
 <section class="hero" aria-label="Introduction">
 
-  <div class="hero-name" aria-label="Adeyinka Maddy">
-    <span class="name-first" aria-hidden="true">Adeyinka</span>
-    <span class="name-last"  aria-hidden="true">Maddy</span>
+  <div class="hero-name" aria-label="ABM">
+    <span class="name-abm" aria-hidden="true">ABM</span>
   </div>
 
-  <!--
-    Caption bar — thin rule + two metadata lines.
-    Positioned absolute at the bottom of the hero.
-    Mirrors michaelclarke.work's "Director / Photographer / New York / 2026".
-  -->
   <div class="hero-caption" aria-hidden="true">
-    <span>Photographer&ensp;&middot;&ensp;Project Manager</span>
-    <span>New York&ensp;&middot;&ensp;2025</span>
+    <span>Creative</span>
+    <span>New York&ensp;&middot;&ensp;2026</span>
   </div>
 
 </section>
 
 
 <!-- ═══════════════════════════════════════════════════════════
-     SERIES TEASER
-     ─────────────
-     alexgeddes/tristanclausen layout:
-       • Image fills ~80 % of viewport width, 90 vh+ tall
-       • Text is a narrow ANNOTATION COLUMN (not a wide panel)
-       • Silence / negative space before the image appears
-       • Only one series highlighted per homepage visit
+     WORKS — vertical card stack
 ════════════════════════════════════════════════════════════ -->
-{featured && (
-  <section class="teaser" aria-label={`Featured series: ${featured.data.title}`}>
+<section class="works-section" aria-label="Work">
 
-    <!--
-      Chapter marker — very quiet, gives editorial rhythm
-      before the image hits (henryschwabe reference).
-    -->
-    <div class="chapter-marker" aria-hidden="true">
-      <span class="chapter-label">Series</span>
-      <span class="chapter-rule"></span>
-    </div>
+  <div class="section-marker" aria-hidden="true">
+    <span class="marker-label">Work</span>
+  </div>
 
-    <!-- Main image + annotation grid -->
-    <div class="teaser-grid">
-
-      <!-- ── Image column (80 % desktop, full-width mobile) ── -->
-      <a
-        href={`/series/${featured.data.slug}`}
-        class="teaser-img-col"
-        aria-label={`Open ${featured.data.title}`}
-        tabindex="-1"
-      >
-        <Image
-          src={fordhamHero}
-          alt={`${featured.data.title} — hero image`}
-          class="teaser-img"
-          loading="eager"
-          widths={[900, 1400, 1800, 2400]}
-          sizes="(max-width: 767px) 100vw, 80vw"
-        />
-      </a>
-
-      <!-- ── Annotation column (20 % desktop) ── -->
-      <div class="teaser-col" role="complementary">
-
-        <div class="col-top">
-          <span class="col-index">01</span>
-          <div  class="col-rule" aria-hidden="true"></div>
-          <h2  class="col-title">{featured.data.title}</h2>
-          <p   class="col-excerpt">{excerpt}</p>
+  <div class="cards-stack">
+    {cards.map(({ title, href, cover, imgPos }, i) => (
+      <a href={href} class="card" aria-label={title}>
+        <div class="card-img-wrap">
+          <Image
+            src={cover}
+            alt={title}
+            class="card-img"
+            loading={i < 2 ? 'eager' : 'lazy'}
+            widths={[800, 1200, 1800, 2400]}
+            sizes="(max-width: 767px) 100vw, 90vw"
+            style={`object-position: ${imgPos}`}
+          />
+          <div class="card-overlay" aria-hidden="true">
+            <span class="overlay-title">{title}</span>
+          </div>
         </div>
+      </a>
+    ))}
+  </div>
 
-        <a
-          href={`/series/${featured.data.slug}`}
-          class="col-link"
-          aria-label={`View full ${featured.data.title} series`}
-        >
-          View Series
-          <span class="col-arrow" aria-hidden="true">&#x2192;</span>
-        </a>
+</section>
 
-      </div>
-
-    </div>
-
-    <!--
-      Post-teaser spacer — generous negative space below the image
-      before the footer. morganpilcher reference: meditative pace.
-    -->
-    <div class="teaser-rest" aria-hidden="true"></div>
-
-  </section>
-)}
+<div class="page-rest" aria-hidden="true"></div>
 
 </Layout>
 
-<!-- ═══════════════════════════════════════════════════════════
-     STYLES
-════════════════════════════════════════════════════════════ -->
+
 <style>
 
 /* ── HERO ──────────────────────────────────────────────────── */
@@ -154,12 +97,11 @@ import fordhamHero from '../content/series/fordham-road/media/hero.webp';
   display: flex;
   flex-direction: column;
   justify-content: center;
-  /* Top clears fixed nav; bottom reserved for caption bar */
+  align-items: center;
   padding: 8rem 2.25rem 7rem;
   overflow: hidden;
 }
 
-/* Very faint grain — keeps the pure black from feeling sterile */
 .hero::before {
   content: '';
   position: absolute;
@@ -173,52 +115,20 @@ import fordhamHero from '../content/series/fordham-road/media/hero.webp';
   position: relative;
   z-index: 1;
   display: flex;
-  flex-direction: column;
-  /* Tight leading — the two lines read as a single mass */
-  line-height: 0.86;
-  /* Very subtle left offset for visual rhythm */
-  padding-left: clamp(0rem, 1vw, 1.5rem);
+  justify-content: center;
 }
 
-/* "Adeyinka" — quieter, sets up the last name */
-.name-first {
+.name-abm {
   display: block;
-  font-family: 'Instrument Serif', 'Times New Roman', serif;
-  font-style: italic;
+  font-family: 'Times New Roman', Times, serif;
+  font-style: normal;
   font-weight: 400;
-  /*
-    Size: large enough to feel substantial,
-    small enough that "Maddy" dominates clearly.
-    At 1440 px → 122 px. At 390 px → 35 px.
-  */
   font-size: clamp(2.125rem, 8.5vw, 11rem);
-  color: rgba(255, 255, 255, 0.36);
-  letter-spacing: -0.015em;
+  color: #fff;
+  letter-spacing: 0.05em;
   animation: revealUp 1s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
-/* "Maddy" — the statement. As wide as the viewport will allow. */
-.name-last {
-  display: block;
-  font-family: 'Instrument Serif', 'Times New Roman', serif;
-  font-style: italic;
-  font-weight: 400;
-  /*
-    Size: at 1440 px → 288 px.
-    "Maddy" at 288 px spans ≈ 68 % of viewport width — dramatic.
-    At 390 px → 85 px → spans ≈ 74 % — still bold on mobile.
-  */
-  font-size: clamp(5rem, 20vw, 26rem);
-  color: #fff;
-  letter-spacing: -0.03em;
-  animation: revealUp 1s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both;
-}
-
-/*
-  Caption bar — michaelclarke reference.
-  Thin rule above. Discipline left, location right.
-  Absolute so it doesn't push layout.
-*/
 .hero-caption {
   position: absolute;
   inset-inline: 2.25rem;
@@ -234,245 +144,134 @@ import fordhamHero from '../content/series/fordham-road/media/hero.webp';
 
 .hero-caption span {
   font-family: 'Times New Roman', Times, serif;
-  font-size: 0.5625rem; /* 9 px */
+  font-size: 0.5625rem;
   letter-spacing: 0.38em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.38);
-  /* Compensate for optical shift from letter-spacing */
+  color: rgba(255, 255, 255, 0.58);
   padding-left: 0.38em;
 }
 
 
-/* ── SERIES TEASER ─────────────────────────────────────────── */
+/* ── WORKS SECTION ─────────────────────────────────────────── */
 
-.teaser {
-  /* No top padding — scrolling immediately reveals chapter marker */
-}
-
-/*
-  Chapter marker — henryschwabe institutional feel.
-  "SERIES" label + thin extending rule.
-  Quiet. Just enough to signal a new section.
-*/
-.chapter-marker {
+.section-marker {
   display: flex;
+  justify-content: center;
   align-items: center;
-  gap: 1.25rem;
-  padding: 5rem 2.25rem 2.75rem;
+  padding: 5rem 2.25rem 3rem;
 }
 
-.chapter-label {
+.marker-label {
   font-family: 'Times New Roman', Times, serif;
-  font-size: 0.5625rem;
+  font-size: 0.75rem;
   letter-spacing: 0.5em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.2);
-  /* Compensate for letter-spacing */
+  color: rgba(255, 255, 255, 0.92);
   padding-left: 0.5em;
   white-space: nowrap;
-  flex-shrink: 0;
 }
 
-.chapter-rule {
+/* ── Card stack ── */
+
+.cards-stack {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(4.5rem, 9vw, 11rem);
+  padding: 0 clamp(2rem, 4vw, 4.5rem);
+}
+
+/* ── Card ── */
+
+.card {
   display: block;
-  flex: 1;
-  height: 1px;
-  background: rgba(255, 255, 255, 0.07);
+  color: inherit;
+  text-decoration: none;
 }
 
-/*
-  The grid: alexgeddes/tristanclausen layout.
-  80 % image / 20 % annotation column.
-  Image is left-flush (no left padding on the section).
-*/
-.teaser-grid {
-  display: grid;
-  grid-template-columns: 1fr; /* mobile: stacked */
-}
-
-@media (min-width: 768px) {
-  .teaser-grid {
-    grid-template-columns: 80fr 20fr;
-    min-height: 90vh;
-    align-items: stretch;
-  }
-}
-
-/* ── Image column ── */
-.teaser-img-col {
-  display: block;
+/* Default: 3:2 landscape */
+.card-img-wrap {
   position: relative;
   overflow: hidden;
-  /* Mobile: portrait crop */
-  aspect-ratio: 4 / 5;
-  cursor: pointer;
+  aspect-ratio: 3 / 2;
+  background: #0a0a0a;
 }
 
-@media (min-width: 768px) {
-  .teaser-img-col {
-    aspect-ratio: unset; /* stretch to grid row height */
-  }
-}
 
-.teaser-img {
+.card-img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center top;
   display: block;
   transition: transform 1.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
-.teaser-img-col:hover .teaser-img {
+.card:hover .card-img {
   transform: scale(1.025);
 }
 
-/* ── Annotation column (20 %) ── */
-.teaser-col {
+/* ── Hover overlay ── */
+
+.card-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.74) 0%,
+    rgba(0, 0, 0, 0.08) 40%,
+    transparent 65%
+  );
   display: flex;
-  flex-direction: column;
-  justify-content: space-between; /* top: meta / bottom: link */
-  padding: 2.5rem 1.75rem 2.5rem 1.75rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.07); /* mobile separator */
+  align-items: flex-end;
+  padding: clamp(1.25rem, 2.5vw, 2.25rem);
+  opacity: 0;
+  transition: opacity 0.32s ease;
+  pointer-events: none;
 }
 
-@media (min-width: 768px) {
-  .teaser-col {
-    padding: 3rem 2rem 3rem 2rem;
-    border-top: none;
-    border-left: 1px solid rgba(255, 255, 255, 0.06);
-  }
+.card:hover .card-overlay {
+  opacity: 1;
 }
 
-.col-top {
-  display: flex;
-  flex-direction: column;
-}
-
-/*
-  Series index — tiny, tracked, at the very top of the column.
-  Gives the annotation column an editorial/catalogue feel.
-*/
-.col-index {
-  font-family: 'Times New Roman', Times, serif;
-  font-size: 0.5rem; /* 8 px */
-  letter-spacing: 0.55em;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.25);
-  padding-left: 0.55em;
-  margin-bottom: 0.875rem;
-}
-
-.col-rule {
-  width: 1.5rem;
-  height: 1px;
-  background: rgba(255, 255, 255, 0.15);
-  margin-bottom: 1.25rem;
-}
-
-/*
-  Series title — Instrument Serif italic.
-  Sized to feel substantial within the narrow column
-  without fighting the image.
-*/
-.col-title {
+.overlay-title {
   font-family: 'Instrument Serif', 'Times New Roman', serif;
   font-style: italic;
   font-weight: 400;
-  font-size: clamp(1.625rem, 2.8vw, 2.5rem);
+  font-size: clamp(1.375rem, 2.8vw, 2.5rem);
   line-height: 1.05;
-  letter-spacing: -0.01em;
   color: #fff;
-  margin-bottom: 1.5rem;
+  letter-spacing: -0.01em;
 }
 
-/*
-  Excerpt — small, quiet, lets the image speak.
-  Tight line-height matches the meditative pace.
-*/
-.col-excerpt {
-  font-family: 'Times New Roman', Times, serif;
-  font-size: 0.75rem; /* 12 px */
-  line-height: 1.72;
-  color: rgba(255, 255, 255, 0.42);
-  /* morganpilcher reference: deliberate, unhurried reading */
-}
 
-/*
-  Link — at the bottom of the column (justify-content: space-between).
-  Lowercase. No underline. Just arrow + opacity.
-*/
-.col-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.625rem;
-  font-family: 'Times New Roman', Times, serif;
-  font-size: 0.625rem; /* 10 px */
-  letter-spacing: 0.3em;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.45);
-  padding-left: 0.3em;
-  margin-top: 2.5rem;
-  transition: color 0.2s ease, gap 0.2s ease;
-}
+/* ── PAGE REST ─────────────────────────────────────────────── */
 
-.col-link:hover {
-  color: rgba(255, 255, 255, 0.9);
-  gap: 1rem;
-}
-
-.col-arrow {
-  transition: transform 0.2s ease;
-  font-size: 0.875rem;
-}
-
-.col-link:hover .col-arrow {
-  transform: translateX(3px);
-}
-
-/*
-  Post-teaser rest space — morganpilcher reference.
-  Generous breathing room before the ABM footer.
-  The silence is part of the design.
-*/
-.teaser-rest {
-  height: clamp(5rem, 10vw, 9rem);
+.page-rest {
+  height: clamp(6rem, 10vw, 12rem);
 }
 
 
 /* ── ANIMATIONS ────────────────────────────────────────────── */
 
 @keyframes revealUp {
-  from {
-    opacity: 0;
-    transform: translateY(28px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(28px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 
-/* ── MOBILE OVERRIDES ──────────────────────────────────────── */
+/* ── MOBILE ────────────────────────────────────────────────── */
 
-@media (max-width: 639px) {
-  .hero {
-    padding: 7.5rem 1.25rem 6rem;
-  }
+@media (max-width: 767px) {
+  .hero { padding: 7.5rem 1.25rem 6rem; }
 
   .hero-caption {
     inset-inline: 1.25rem;
     bottom: 1.75rem;
   }
 
-  .chapter-marker {
-    padding: 4rem 1.25rem 2rem;
-  }
+  .section-marker { padding: 4rem 1.25rem 2.5rem; }
 
-  .teaser-col {
-    padding: 2.5rem 1.25rem;
-  }
+  .cards-stack { padding: 0 1.25rem; gap: clamp(3rem, 10vw, 5rem); }
+
 }
 
 </style>

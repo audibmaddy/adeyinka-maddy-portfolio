@@ -1,6 +1,10 @@
 ---
 /**
- * Series index — /series
+ * Series index — /series — redirects to /work
+ */
+return Astro.redirect('/work', 301);
+/**
+ * (Original series listing kept below for reference)
  *
  * Layout references:
  *   henryschwabe — institutional confidence, bold scale
@@ -172,7 +176,7 @@ const cards = sorted.map(entry => ({
   font-size: 0.5625rem;
   letter-spacing: 0.45em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.22);
+  color: rgba(255, 255, 255, 0.45);
   padding-left: 0.45em;
   align-self: flex-end;
   padding-bottom: 0.5em;
@@ -285,12 +289,12 @@ const cards = sorted.map(entry => ({
   font-size: 0.5rem;
   letter-spacing: 0.45em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.28);
+  color: rgba(255, 255, 255, 0.55);
   padding-left: 0.45em;
 }
 
 .card-sep {
-  color: rgba(255, 255, 255, 0.14);
+  color: rgba(255, 255, 255, 0.28);
   font-size: 0.45rem;
 }
 

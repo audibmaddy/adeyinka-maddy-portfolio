@@ -6,5 +6,6 @@ type: "selected"
 tags: ["portrait"]
 coverImage: "./media/hero.webp"
 description: "Portrait of Please Don't Destroy"
+label: "Please Don't Destroy"
+sublabel: "Comedy Group"
 ---
-# Optional short statement

@@ -6,6 +6,8 @@ type: "series"
 tags: ["documentary"]
 coverImage: "./media/hero.webp"
 description: "A macro shot of a leg with a Fordham related tatto on it"
+vimeoId: "835278155"
+exhibition: "Exhibited at CFC x Soho House, New York, 2025"
 
 # ← EDIT THIS LIST to control exact display order
 imageOrder:
@@ -47,7 +49,7 @@ highlightedImages:
 ---
 
 # Full narrative statement goes here (Markdown)
-Fordham (Road) began as an attempt to capture the specific transplant culture that grew within a privileged campus in the Bronx, but it ultimately exposed a longing I had never allowed myself to confront. 
+(Fordham) Road began as an attempt to capture the specific transplant culture that grew within a privileged campus in the Bronx, but it ultimately exposed a longing I had never allowed myself to confront. 
 As a dark-skin first-generation kid who grew up without ease or social safety, I entered a college environment where many students moved through the world with a comfort I had never known. I photographed them because their ordinary freedom was something I had never been allowed to feel. The work became a personal study of how belonging is performed and how ease is embodied by those who never had to question whether they deserve it. 
 
 In photographing their ease, I was grieving the youth I spent prevailing instead of belonging. 

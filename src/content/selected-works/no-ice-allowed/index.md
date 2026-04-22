@@ -6,5 +6,5 @@ type: "selected"
 tags: ["street"]
 coverImage: "./media/hero.webp"
 description: "Documentary Shot inside store with No Ice Sign"
+label: "no ice allowed"
 ---
-# Optional short statement

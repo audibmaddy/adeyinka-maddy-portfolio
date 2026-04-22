@@ -6,12 +6,5 @@ type: "selected"
 tags: ["street"]
 coverImage: "./media/hero.webp"
 description: "Man laying flat out on Ice"
----
-# Optional short statement
-
-# ← EDIT THIS LIST to control exact display order
-imageOrder:
-  - hero.webp
-  - 01.webp
-
+label: "2000 viewers"
 ---

@@ -1,6 +1,10 @@
 ---
 /**
- * Contact — /contact
+ * Contact — /contact — redirects to /about
+ */
+return Astro.redirect('/about', 301);
+/**
+ * (Original contact page kept below for reference)
  *
  * Minimal. A single invitation to reach out.
  * Real details: phone, email, Instagram, LinkedIn, location.
@@ -156,7 +160,7 @@ import Layout from '../layouts/Layout.astro';
   font-size: 0.5rem;
   letter-spacing: 0.5em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.22);
+  color: rgba(255, 255, 255, 0.45);
   padding-left: 0.5em;
 }
 
@@ -188,7 +192,7 @@ import Layout from '../layouts/Layout.astro';
   font-size: 0.6875rem;
   letter-spacing: 0.28em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.45);
+  color: rgba(255, 255, 255, 0.62);
   padding-left: 0.28em;
   transition: color 0.18s ease;
 }
@@ -201,7 +205,7 @@ import Layout from '../layouts/Layout.astro';
   font-family: 'Times New Roman', Times, serif;
   font-size: clamp(0.8125rem, 1vw, 0.9375rem);
   line-height: 1.75;
-  color: rgba(255, 255, 255, 0.45);
+  color: rgba(255, 255, 255, 0.62);
 }
 
 

@@ -1,26 +1,21 @@
 ---
 /**
- * Navigation — cathydolle.com reference
+ * Navigation — three pages + eye icon external link
  *
- * Always-transparent. Never adds background on scroll.
- * Artist mark (three circles) on the left. Small uppercase links on the right.
- * Hover is opacity-only — no underlines, no color shifts, no chrome.
- * Text-shadow gives legibility over images without adding visible UI.
- *
- * Active state: /projects/* and /work/* both highlight "Work".
+ * Logo (left) → /
+ * WORK → /work
+ * Eye SVG → cosmos.so (external, new tab)
+ * ABOUT → /about
  */
 const links = [
-  { href: '/work',    label: 'Work'    },
-  { href: '/series',  label: 'Series'  },
-  { href: '/about',   label: 'About'   },
-  { href: '/contact', label: 'Contact' },
+  { href: '/work',  label: 'Work'  },
+  { href: '/about', label: 'About' },
 ];
 
 const pathname = Astro.url.pathname;
 
 function isActive(href: string): boolean {
   if (href === '/work') {
-    // Work is active for /work, /work/*, and /projects/*
     return pathname === '/work'
       || pathname.startsWith('/work/')
       || pathname.startsWith('/projects/');
@@ -59,12 +54,40 @@ function isActive(href: string): boolean {
           </a>
         </li>
       ))}
+
+      <!-- Eye icon — external link to cosmos.so -->
+      <li>
+        <a
+          href="https://www.cosmos.so/audibmaddy/my-eye"
+          class="nav-eye"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="My Eye — cosmos.so"
+        >
+          <svg
+            viewBox="0 0 24 16"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            aria-hidden="true"
+            focusable="false"
+            class="eye-svg"
+          >
+            <path
+              d="M12 1.5C7 1.5 2.8 5.5 1 8c1.8 2.5 6 6.5 11 6.5S21.2 10.5 23 8c-1.8-2.5-6-6.5-11-6.5z"
+              stroke="currentColor"
+              stroke-width="1.6"
+              stroke-linejoin="round"
+            />
+            <circle cx="12" cy="8" r="2.75" stroke="currentColor" stroke-width="1.6" />
+          </svg>
+        </a>
+      </li>
     </ul>
   </nav>
 </header>
 
 <style>
-  /* ─── Shell — always transparent, never changes ─── */
+  /* ─── Shell ─── */
   .nav {
     position: fixed;
     inset-block-start: 0;
@@ -87,9 +110,7 @@ function isActive(href: string): boolean {
     filter: drop-shadow(0 1px 6px rgba(0, 0, 0, 0.45));
   }
 
-  .nav-mark:hover {
-    opacity: 1;
-  }
+  .nav-mark:hover { opacity: 1; }
 
   .nav-mark svg {
     height: 26px;
@@ -112,7 +133,7 @@ function isActive(href: string): boolean {
     font-size: 0.6875rem;
     letter-spacing: 0.28em;
     text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.48);
+    color: rgba(255, 255, 255, 0.65);
     transition: color 0.18s ease;
     text-shadow: 0 1px 6px rgba(0, 0, 0, 0.5);
   }
@@ -122,23 +143,39 @@ function isActive(href: string): boolean {
     color: rgba(255, 255, 255, 0.95);
   }
 
+  /* ─── Eye icon ─── */
+  .nav-eye {
+    display: flex;
+    align-items: center;
+    letter-spacing: 0;
+    text-transform: none;
+    opacity: 0.65;
+    transition: opacity 0.18s ease;
+  }
+
+  .nav-eye:hover {
+    opacity: 1;
+  }
+
+  .eye-svg {
+    width: 26px;
+    height: auto;
+    display: block;
+  }
+
   /* ─── Mobile ─── */
   @media (max-width: 639px) {
-    .nav {
-      padding: 1.25rem 1.25rem;
-    }
+    .nav { padding: 1.25rem; }
 
-    .nav-mark svg {
-      height: 22px;
-    }
+    .nav-mark svg { height: 22px; }
 
-    nav ul {
-      gap: 1.5rem;
-    }
+    nav ul { gap: 1.5rem; }
 
     nav a {
       font-size: 0.625rem;
       letter-spacing: 0.22em;
     }
+
+    .eye-svg { width: 19px; }
   }
 </style>

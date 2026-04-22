@@ -6,5 +6,6 @@ type: "selected"
 tags: ["portrait"]
 coverImage: "./media/hero.jpg"
 description: "Portrait of Reign Judge"
+label: "Reign Judge"
+sublabel: "Model"
 ---
-# Optional short statement

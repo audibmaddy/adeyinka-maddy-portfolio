@@ -6,5 +6,6 @@ type: "selected"
 tags: ["portrait"]
 coverImage: "./media/hero.jpg"
 description: "Portrait of Evan Mock"
+label: "Evan Mock"
+sublabel: "Actor"
 ---
-# Optional short statement

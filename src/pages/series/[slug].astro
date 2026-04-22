@@ -105,6 +105,9 @@ const year = entry.data.date.getFullYear();
       <span class="meta-year">{year}</span>
     </div>
     <h1 class="hero-title">{entry.data.title}</h1>
+    {entry.data.exhibition && (
+      <p class="hero-exhibition">{entry.data.exhibition}</p>
+    )}
   </div>
 </section>
 
@@ -132,6 +135,7 @@ const year = entry.data.date.getFullYear();
 <section class="sequence" aria-label="Series photographs">
   {sequenceImages.map((img, i) => (
     <figure
+      id={img.filename.replace(/\.[^.]+$/, '').toLowerCase()}
       class:list={['frame', { 'is-highlight': img.highlighted }]}
       aria-label={`${entry.data.title} — image ${i + 2} of ${images.length}`}
     >
@@ -148,6 +152,24 @@ const year = entry.data.date.getFullYear();
     </figure>
   ))}
 </section>
+
+<!-- Video at end (if vimeoId present) -->
+{entry.data.vimeoId && (
+  <section class="series-video" aria-label={`${entry.data.title} — video`}>
+    <div class="video-wrap">
+      <div class="video-ratio">
+        <iframe
+          src={`https://player.vimeo.com/video/${entry.data.vimeoId}?badge=0&autopause=0&player_id=0&app_id=58479&loop=1`}
+          frameborder="0"
+          allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share"
+          referrerpolicy="strict-origin-when-cross-origin"
+          class="video-iframe"
+          title={entry.data.title}
+        ></iframe>
+      </div>
+    </div>
+  </section>
+)}
 
 <!-- Generous post-sequence rest before ABM footer -->
 <div class="sequence-rest" aria-hidden="true"></div>
@@ -208,12 +230,12 @@ const year = entry.data.date.getFullYear();
   font-size: 0.5625rem;
   letter-spacing: 0.4em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.5);
+  color: rgba(255, 255, 255, 0.68);
   padding-left: 0.4em;
 }
 
 .meta-dot {
-  color: rgba(255, 255, 255, 0.22);
+  color: rgba(255, 255, 255, 0.35);
   font-size: 0.5rem;
 }
 
@@ -226,6 +248,16 @@ const year = entry.data.date.getFullYear();
   letter-spacing: -0.025em;
   color: #fff;
   max-width: 900px;
+}
+
+.hero-exhibition {
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 0.5625rem;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.72);
+  padding-left: 0.32em;
+  margin-top: 1.25rem;
 }
 
 
@@ -326,6 +358,41 @@ const year = entry.data.date.getFullYear();
   max-width: none;
   height: auto;
 }
+
+/* ── END VIDEO ─────────────────────────────────────────────── */
+
+.series-video {
+  padding: clamp(4rem, 6vw, 8rem) 2.25rem 0;
+}
+
+.video-wrap {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.video-ratio {
+  position: relative;
+  padding-top: 50%; /* matches the embed's native aspect ratio */
+  background: #000;
+  overflow: hidden;
+}
+
+.video-iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+  display: block;
+}
+
+@media (max-width: 639px) {
+  .series-video {
+    padding-inline: 0;
+  }
+}
+
 
 /* Post-sequence rest — morganpilcher meditative finish */
 .sequence-rest {

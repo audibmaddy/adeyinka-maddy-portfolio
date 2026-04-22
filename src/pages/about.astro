@@ -19,7 +19,7 @@ import headshot from '../assets/branding/media/headshot.jpg';
 
 <Layout
   title="About"
-  description="Adeyinka Maddy — Photographer, videographer, and project manager based in Queens, NY."
+  description="Adeyinka Maddy — Creative based in Queens, NY."
 >
 
 <!-- ═══════════════════════════════════════════════════════════
@@ -29,9 +29,7 @@ import headshot from '../assets/branding/media/headshot.jpg';
   <div class="header-rule" aria-hidden="true"></div>
   <h1 class="header-name">Adeyinka<br />Maddy</h1>
   <div class="header-role">
-    <span>Photographer</span>
-    <span class="role-sep" aria-hidden="true">/</span>
-    <span>Project Manager</span>
+    <span>Creative</span>
     <span class="role-sep" aria-hidden="true">/</span>
     <span>Queens, NY</span>
   </div>
@@ -118,6 +116,78 @@ import headshot from '../assets/branding/media/headshot.jpg';
 
 </section>
 
+<!-- ═══════════════════════════════════════════════════════════
+     CONTACT SECTION
+     Merged from /contact — email, phone, socials, location.
+════════════════════════════════════════════════════════════ -->
+<section class="contact-section" aria-label="Contact">
+
+  <div class="contact-header">
+    <div class="contact-rule" aria-hidden="true"></div>
+    <h2 class="contact-title">Get in<br />Touch</h2>
+  </div>
+
+  <div class="contact-body">
+
+    <!-- Email -->
+    <div class="contact-block">
+      <span class="contact-label">Email</span>
+      <a
+        href="mailto:adeyinkabmaddy@gmail.com"
+        class="contact-link contact-link--primary"
+        aria-label="Send an email to Adeyinka Maddy"
+      >
+        adeyinkabmaddy@gmail.com
+      </a>
+    </div>
+
+    <!-- Phone -->
+    <div class="contact-block">
+      <span class="contact-label">Phone</span>
+      <a
+        href="tel:+19163081848"
+        class="contact-link contact-link--primary"
+        aria-label="Call Adeyinka Maddy"
+      >
+        916-308-1848
+      </a>
+    </div>
+
+    <!-- Social links -->
+    <div class="contact-block">
+      <span class="contact-label">Social</span>
+      <div class="contact-socials">
+        <a
+          href="https://www.instagram.com/audi.abm"
+          class="contact-link"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Adeyinka Maddy on Instagram"
+        >
+          Instagram
+        </a>
+        <a
+          href="https://www.linkedin.com/in/adeyinka-maddy-62950320b/?skipRedirect=true"
+          class="contact-link"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Adeyinka Maddy on LinkedIn"
+        >
+          LinkedIn
+        </a>
+      </div>
+    </div>
+
+    <!-- Location -->
+    <div class="contact-block">
+      <span class="contact-label">Location</span>
+      <p class="contact-note">Queens, New York</p>
+    </div>
+
+  </div>
+
+</section>
+
 <div class="page-rest" aria-hidden="true"></div>
 
 </Layout>
@@ -160,7 +230,7 @@ import headshot from '../assets/branding/media/headshot.jpg';
   font-size: 0.5625rem;
   letter-spacing: 0.42em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.38);
+  color: rgba(255, 255, 255, 0.58);
   padding-left: 0.42em;
 }
 
@@ -266,7 +336,7 @@ import headshot from '../assets/branding/media/headshot.jpg';
   font-size: 0.5rem;
   letter-spacing: 0.5em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.22);
+  color: rgba(255, 255, 255, 0.45);
   padding-left: 0.5em;
   margin-bottom: 1.5rem;
 }
@@ -298,6 +368,111 @@ import headshot from '../assets/branding/media/headshot.jpg';
 }
 
 
+/* ── CONTACT SECTION ───────────────────────────────────────── */
+
+.contact-section {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(3rem, 6vw, 6rem);
+  padding: clamp(5rem, 8vw, 9rem) 2.25rem 0;
+}
+
+@media (min-width: 768px) {
+  .contact-section {
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+  }
+}
+
+.contact-rule {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.08);
+  margin-bottom: clamp(2.5rem, 4vw, 4rem);
+}
+
+.contact-title {
+  font-family: 'Instrument Serif', 'Times New Roman', serif;
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(3rem, 8vw, 8rem);
+  line-height: 0.92;
+  letter-spacing: -0.03em;
+  color: #fff;
+}
+
+.contact-body {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(2rem, 3.5vw, 3.5rem);
+  padding-top: 0;
+}
+
+@media (min-width: 768px) {
+  .contact-body {
+    padding-top: clamp(2rem, 4vw, 4rem);
+  }
+}
+
+.contact-block {
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.contact-label {
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 0.5rem;
+  letter-spacing: 0.5em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.45);
+  padding-left: 0.5em;
+}
+
+.contact-link--primary {
+  font-family: 'Instrument Serif', 'Times New Roman', serif;
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(1.125rem, 2.5vw, 2rem);
+  line-height: 1.2;
+  color: rgba(255, 255, 255, 0.85);
+  letter-spacing: -0.01em;
+  transition: color 0.2s ease;
+}
+
+.contact-link--primary:hover {
+  color: #fff;
+}
+
+.contact-socials {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.contact-link {
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 0.6875rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.62);
+  padding-left: 0.28em;
+  transition: color 0.18s ease;
+}
+
+.contact-link:hover {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.contact-note {
+  font-family: 'Times New Roman', Times, serif;
+  font-size: clamp(0.8125rem, 1vw, 0.9375rem);
+  line-height: 1.75;
+  color: rgba(255, 255, 255, 0.62);
+}
+
+
 /* ── PAGE REST ─────────────────────────────────────────────── */
 
 .page-rest {
@@ -318,6 +493,10 @@ import headshot from '../assets/branding/media/headshot.jpg';
 
   .info-grid {
     margin-inline: 1.25rem;
+  }
+
+  .contact-section {
+    padding-inline: 1.25rem;
   }
 }
 

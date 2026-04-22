@@ -6,5 +6,6 @@ type: "selected"
 tags: ["portrait"]
 coverImage: "./media/hero.webp"
 description: "Portrait of Role Model"
+label: "Role Model"
+sublabel: "Artist"
 ---
-# Optional short statement

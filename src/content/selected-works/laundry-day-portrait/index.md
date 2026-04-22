@@ -6,5 +6,6 @@ type: "selected"
 tags: ["portrait"]
 coverImage: "./media/hero.webp"
 description: "Portrait of Laundry Day"
+label: "Laundry Day"
+sublabel: "Band"
 ---
-# Optional short statement
