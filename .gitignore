@@ -22,3 +22,5 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+src/content/projects/third-eye/media/*.MP4
+src/content/projects/third-eye/media/*.mp4
