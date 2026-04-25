@@ -4,7 +4,7 @@ slug: "third-eye"
 date: "2024-06-15"
 type: "project"
 tags: ["film", "direction"]
-coverImage: "./media/thumbnail.jpeg"
+coverImage: "./media/thirdeyethumbnailrevised.jpg"
 description: "Directed and edited a social promo for Third Eye's popup with Takeout in the Bronx."
 vimeoId: "1184215251"
 client: "Third Eye"
