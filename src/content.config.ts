@@ -66,6 +66,7 @@ const projects = defineCollection({
     videoEmbed: z.string().optional(),
     vimeoId: z.string().optional(),
     instagramId: z.string().optional(),
+    localVideo: z.string().optional(),
     linkedinEmbed: z.string().optional(),
     externalUrl: z.string().optional(),
     client: z.string().optional(),

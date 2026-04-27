@@ -6,7 +6,7 @@ type: "project"
 tags: ["film", "campaign"]
 coverImage: "./media/cover.webp"
 description: "Director's Assistant on the adidas × Avirex: Legacy Reimagined campaign, directed by Mez Heirs."
-instagramId: "DQNHZiSkknD"
+localVideo: "./media/video.mp4"
 assistantCredit: true
 client: "adidas × Avirex"
 role: "Director's Assistant"
