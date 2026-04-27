@@ -75,8 +75,9 @@ const sequenceImages = order
   .map(f => ({ filename: f, src: mediaMap[f], highlighted: highlighted.has(f) }))
   .filter(img => Boolean(img.src));
 
-const year        = entry.data.date.getFullYear();
-const isVideoFirst = Boolean(entry.data.vimeoId);
+const year             = entry.data.date.getFullYear();
+const isVideoFirst     = Boolean(entry.data.vimeoId);
+const isInstagramFirst = Boolean(entry.data.instagramId) && !entry.data.vimeoId;
 ---
 
 <Layout
@@ -84,7 +85,80 @@ const isVideoFirst = Boolean(entry.data.vimeoId);
   description={entry.data.description}
 >
 
-{isVideoFirst ? (
+{isInstagramFirst ? (
+
+  <!-- ═══════════════════════════════════════════════════════════
+       INSTAGRAM-FIRST LAYOUT
+       Portrait reel embed, centred. Used for assistant credits
+       and campaign work sourced from Instagram.
+  ════════════════════════════════════════════════════════════ -->
+
+  <>
+    <header class="vf-header">
+      <div class="vf-meta">
+        {entry.data.tags.map(tag => (
+          <span class="meta-tag">{tag}</span>
+        ))}
+        <span class="meta-dot" aria-hidden="true">/</span>
+        <span class="meta-year">{year}</span>
+      </div>
+      <h1 class="vf-title">{entry.data.title}</h1>
+      {entry.data.assistantCredit && (
+        <p class="assist-label">Assistant Credit</p>
+      )}
+    </header>
+
+    <!-- Portrait reel embed -->
+    <section class="ig-theater" aria-label={`${entry.data.title} — reel`}>
+      <div class="ig-wrap">
+        <iframe
+          src={`https://www.instagram.com/reel/${entry.data.instagramId}/embed/captioned/`}
+          class="ig-iframe"
+          frameborder="0"
+          scrolling="no"
+          allowtransparency="true"
+          title={entry.data.title}
+        ></iframe>
+      </div>
+    </section>
+
+    <!-- Metadata bar -->
+    <div class="meta-bar" aria-label="Project information">
+      {entry.data.client && (
+        <div class="meta-item">
+          <span class="meta-key">Client</span>
+          <span class="meta-val">{entry.data.client}</span>
+        </div>
+      )}
+      {entry.data.role && (
+        <div class="meta-item">
+          <span class="meta-key">Role</span>
+          <span class="meta-val">{entry.data.role}</span>
+        </div>
+      )}
+      {entry.data.location && (
+        <div class="meta-item">
+          <span class="meta-key">Location</span>
+          <span class="meta-val">{entry.data.location}</span>
+        </div>
+      )}
+      <div class="meta-item">
+        <span class="meta-key">Year</span>
+        <span class="meta-val">{year}</span>
+      </div>
+    </div>
+
+    {entry.data.scope && (
+      <section class="scope-section" aria-label="Project scope">
+        <div class="scope-body">
+          <span class="scope-label">Scope</span>
+          <p class="scope-text">{entry.data.scope}</p>
+        </div>
+      </section>
+    )}
+  </>
+
+) : isVideoFirst ? (
 
   <!-- ═══════════════════════════════════════════════════════════
        VIDEO-FIRST LAYOUT
@@ -158,7 +232,7 @@ const isVideoFirst = Boolean(entry.data.vimeoId);
 ) : (
 
   <!-- ═══════════════════════════════════════════════════════════
-       IMAGE-FIRST LAYOUT (existing projects)
+       IMAGE-FIRST LAYOUT
   ════════════════════════════════════════════════════════════ -->
 
   <>
@@ -304,6 +378,42 @@ const isVideoFirst = Boolean(entry.data.vimeoId);
   line-height: 0.93;
   letter-spacing: -0.025em;
   color: #fff;
+}
+
+
+/* ── ASSISTANT CREDIT LABEL ────────────────────────────────── */
+
+.assist-label {
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 0.4375rem;
+  letter-spacing: 0.55em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.32);
+  padding-left: 0.55em;
+  margin-top: 1.75rem;
+}
+
+
+/* ── INSTAGRAM REEL EMBED ───────────────────────────────────── */
+
+.ig-theater {
+  display: flex;
+  justify-content: center;
+  padding: 0 2.25rem clamp(3rem, 5vw, 6rem);
+}
+
+.ig-wrap {
+  /* Instagram reels are 9:16 — cap width so it reads as a phone screen */
+  width: min(100%, 380px);
+}
+
+.ig-iframe {
+  display: block;
+  width: 100%;
+  /* 9:16 aspect ratio */
+  height: calc(min(100vw - 4.5rem, 380px) * 16 / 9);
+  border: none;
+  background: #0a0a0a;
 }
 
 

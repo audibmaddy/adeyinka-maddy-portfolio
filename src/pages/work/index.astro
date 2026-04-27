@@ -117,6 +117,7 @@ const PROJECT_ORDER = [
   'sw-reveal',
   'the-residency-airbnb',
   'oof-campaign-omnicom',
+  'adidas-avirex',
 ] as const;
 
 // Sub-labels and portrait flag per project slug
@@ -127,6 +128,7 @@ const PROJECT_META: Record<string, { sub: string; portrait: boolean; imgPos: str
   'sw-reveal':              { sub: 'Fordham University',      portrait: false, imgPos: 'center top'    },
   'the-residency-airbnb':   { sub: '× Airbnb',               portrait: false, imgPos: 'center top'    },
   'oof-campaign-omnicom':   { sub: '× Omnicom Health',        portrait: false, imgPos: 'center top'    },
+  'adidas-avirex':          { sub: 'adidas × Avirex',         portrait: false, imgPos: 'center center' },
 };
 
 const collectionCards = collectionsFromSelected.map(e => ({
