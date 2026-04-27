@@ -4,7 +4,7 @@ slug: "adidas-avirex"
 date: "2025-06-01"
 type: "project"
 tags: ["film", "campaign"]
-coverImage: "./media/cover.jpg"
+coverImage: "./media/cover.webp"
 description: "Director's Assistant on the adidas × Avirex: Legacy Reimagined campaign, directed by Mez Heirs."
 instagramId: "DQNHZiSkknD"
 assistantCredit: true
