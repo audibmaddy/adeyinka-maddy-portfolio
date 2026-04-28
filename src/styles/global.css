@@ -8,3 +8,12 @@
 :root {
   color-scheme: dark;
 }
+
+/* ── Europa Grotesk DemBold — structural headers / caps ── */
+@font-face {
+  font-family: 'Europa';
+  src: url('/fonts/Europa_Grotesk_SH_DemBol.otf') format('opentype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
