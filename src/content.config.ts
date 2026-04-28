@@ -74,6 +74,7 @@ const projects = defineCollection({
     location: z.string().optional(),
     scope: z.string().optional(),
     assistantCredit: z.boolean().optional(),
+    heroPosition: z.string().optional(),
     imageOrder: z.array(z.string()).optional(),
     highlightedImages: z.array(z.string()).optional(),
   }),
