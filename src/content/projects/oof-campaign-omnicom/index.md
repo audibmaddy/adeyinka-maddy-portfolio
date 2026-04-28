@@ -4,13 +4,13 @@ slug: "oof-campaign-omnicom"
 date: "2024-11-01"
 type: "project"
 tags: ["campaign"]
-coverImage: "./media/hero.jpeg"
+coverImage: "./media/hero.jpg"
 description: "Produced a campaign for the Omnicom Health of Advertising Challenge"
 client: "Omnicom Health"
 role: "Project Manager"
 location: "NYC"
 imageOrder:
-  - hero.jpeg
+  - hero.jpg
   - 01.jpeg
   - 02.jpeg
   - 03.jpeg
