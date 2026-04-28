@@ -2,9 +2,12 @@
 /**
  * Homepage
  *
- * Hero:  Full-viewport typographic statement.
- * Works: Vertical stack of large 3:2 landscape cards.
- *        Uber keeps its natural portrait ratio.
+ * Hero:  Sticky scroll-driven intro.
+ *        ABM begins dead-center; as the user scrolls, ABM scales
+ *        down and the stage translates up to reveal two sentences
+ *        of intro copy. The hero zone is 320vh (280vh on mobile)
+ *        so the user has scroll runway to walk through the states.
+ * Works: Vertical stack of large 3:2 landscape cards (unchanged).
  */
 import Layout from '../layouts/Layout.astro';
 import { Image } from 'astro:assets';
@@ -36,19 +39,41 @@ const cards = [
 >
 
 <!-- ═══════════════════════════════════════════════════════════
-     HERO
+     HERO — sticky scroll-driven intro
 ════════════════════════════════════════════════════════════ -->
-<section class="hero" aria-label="Introduction">
+<section class="hero" id="heroScroll" aria-label="Introduction">
+  <div class="hero-fixed">
+    <div class="hero-stage" id="heroStage">
 
-  <div class="hero-name" aria-label="ABM">
-    <span class="name-abm" aria-hidden="true">ABM</span>
+      <div class="name-abm-wrap">
+        <span class="name-abm" id="heroAbm" aria-label="ABM">ABM</span>
+      </div>
+
+      <div class="hero-sentence" id="heroSentence1">
+        <p>
+          is the creative practice of <em>Adeyinka B. Maddy,</em>
+          a multimedia producer making photos, films, and campaigns
+          about <em>identity, motion, and performance.</em>
+        </p>
+      </div>
+
+      <div class="hero-sentence hero-sentence-2" id="heroSentence2">
+        <p>
+          Born from advice from his mother,
+          <em>Always Be Moving</em> became both
+          a creative thesis and a way of life.
+        </p>
+      </div>
+
+    </div>
+
+    <div class="hero-caption" aria-hidden="true">
+      <span>Creative</span>
+      <span>New York&ensp;&middot;&ensp;2026</span>
+    </div>
+
+    <div class="scroll-hint" id="scrollHint" aria-hidden="true"></div>
   </div>
-
-  <div class="hero-caption" aria-hidden="true">
-    <span>Creative</span>
-    <span>New York&ensp;&middot;&ensp;2026</span>
-  </div>
-
 </section>
 
 
@@ -86,25 +111,97 @@ const cards = [
 
 <div class="page-rest" aria-hidden="true"></div>
 
+<!-- ═══════════════════════════════════════════════════════════
+     HERO sticky-scroll animation
+════════════════════════════════════════════════════════════ -->
+<script is:inline>
+  (function() {
+    const scroll = document.getElementById('heroScroll');
+    const stage  = document.getElementById('heroStage');
+    const abm    = document.getElementById('heroAbm');
+    const s1     = document.getElementById('heroSentence1');
+    const s2     = document.getElementById('heroSentence2');
+    const hint   = document.getElementById('scrollHint');
+    if (!scroll || !stage || !abm || !s1 || !s2) return;
+
+    let startOffset = 0;
+
+    function lerp(a, b, t) { return a + (b - a) * Math.max(0, Math.min(1, t)); }
+    function ease(t)       { return t < 0.5 ? 2*t*t : -1 + (4 - 2*t) * t; }
+
+    function measure() {
+      stage.style.transform = 'none';
+      const stageRect = stage.getBoundingClientRect();
+      const abmRect   = abm.getBoundingClientRect();
+      const stageCenter = stageRect.top + stageRect.height / 2;
+      const abmCenter   = abmRect.top   + abmRect.height   / 2;
+      startOffset = stageCenter - abmCenter;
+    }
+
+    function onScroll() {
+      const rect  = scroll.getBoundingClientRect();
+      const total = scroll.offsetHeight - window.innerHeight;
+      const p     = Math.max(0, Math.min(1, -rect.top / total));
+
+      const p1 = ease(Math.min(1, p / 0.5));
+      const p2 = ease(Math.max(0, (p - 0.55) / 0.45));
+
+      stage.style.transform = 'translateY(' + lerp(startOffset, 0, p1) + 'px)';
+
+      const abmTarget = window.matchMedia('(max-width: 767px)').matches ? 0.82 : 0.7;
+      abm.style.transform = 'scale(' + lerp(1, abmTarget, p1) + ')';
+
+      s1.style.opacity   = String(lerp(0, 1, p1));
+      s1.style.transform = 'translateY(' + lerp(20, 0, p1) + 'px)';
+
+      s2.style.opacity   = String(lerp(0, 1, p2));
+      s2.style.transform = 'translateY(' + lerp(20, 0, p2) + 'px)';
+
+      if (hint) hint.style.opacity = String(lerp(0.55, 0, Math.min(1, p / 0.08)));
+    }
+
+    function init() { measure(); onScroll(); }
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', () => { measure(); onScroll(); }, { passive: true });
+
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(init);
+    }
+    init();
+  })();
+</script>
+
 </Layout>
 
 
 <style>
 
-/* ── HERO ──────────────────────────────────────────────────── */
+/* ═══════════════════════════════════════════════════════════
+   HERO — sticky scroll-driven intro
+═══════════════════════════════════════════════════════════ */
 
+/* Tall outer scroll zone — distance drives the animation */
 .hero {
   position: relative;
-  min-height: 100svh;
+  height: 320vh;
+}
+
+/* Sticky inner — pinned to viewport for the entire scroll zone */
+.hero-fixed {
+  position: sticky;
+  top: 0;
+  height: 100svh;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 8rem 2.25rem 7rem;
   overflow: hidden;
+  padding: 8rem 2.25rem 7rem;
 }
 
-.hero::before {
+/* Subtle film grain */
+.hero-fixed::before {
   content: '';
   position: absolute;
   inset: 0;
@@ -113,11 +210,23 @@ const cards = [
   z-index: 0;
 }
 
-.hero-name {
+/* Stage holds ABM + sentences as a single translatable group */
+.hero-stage {
   position: relative;
   z-index: 1;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(1.25rem, 2.5vw, 2.5rem);
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  will-change: transform;
+}
+
+.name-abm-wrap {
+  animation: revealUp 1s cubic-bezier(0.16, 1, 0.3, 1) both;
+  will-change: transform;
 }
 
 .name-abm {
@@ -125,12 +234,52 @@ const cards = [
   font-family: 'Times New Roman', Times, serif;
   font-style: normal;
   font-weight: 400;
-  font-size: clamp(2.125rem, 8.5vw, 11rem);
+  font-size: clamp(4.5rem, 13vw, 11rem);
   color: #fff;
   letter-spacing: 0.05em;
-  animation: revealUp 1s cubic-bezier(0.16, 1, 0.3, 1) both;
+  line-height: 1;
+  transform-origin: center center;
+  will-change: transform;
 }
 
+/* Sentences — start hidden, faded in by JS */
+.hero-sentence {
+  max-width: 720px;
+  width: 100%;
+  text-align: center;
+  opacity: 0;
+  transform: translateY(20px);
+  will-change: opacity, transform;
+}
+
+.hero-sentence p {
+  font-family: 'Instrument Serif', 'Times New Roman', serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: clamp(1.125rem, 2.2vw, 2rem);
+  line-height: 1.4;
+  color: #fff;
+  letter-spacing: -0.01em;
+  text-wrap: pretty;
+}
+
+.hero-sentence p em {
+  font-style: normal;
+  font-family: 'Instrument Serif', 'Times New Roman', serif;
+  font-weight: 400;
+  letter-spacing: 0;
+}
+
+.hero-sentence-2 p {
+  font-size: clamp(1rem, 1.9vw, 1.7rem);
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.hero-sentence-2 p em {
+  color: #fff;
+}
+
+/* Bottom caption */
 .hero-caption {
   position: absolute;
   inset-inline: 2.25rem;
@@ -141,7 +290,7 @@ const cards = [
   padding-top: 0.875rem;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   animation: revealUp 1s cubic-bezier(0.16, 1, 0.3, 1) 0.35s both;
-  z-index: 1;
+  z-index: 2;
 }
 
 .hero-caption span {
@@ -153,8 +302,53 @@ const cards = [
   padding-left: 0.38em;
 }
 
+/* Scroll hint — vertical hairline with downward glide */
+.scroll-hint {
+  position: absolute;
+  bottom: 5.25rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 1px;
+  height: 44px;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 2;
+  opacity: 0;
+  animation: scrollHintReveal 1.4s cubic-bezier(0.16, 1, 0.3, 1) 1.6s forwards;
+  transition: opacity 0.5s ease;
+  will-change: opacity;
+}
 
-/* ── WORKS SECTION ─────────────────────────────────────────── */
+.scroll-hint::before {
+  content: '';
+  position: absolute;
+  top: -100%;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(255, 255, 255, 0.7) 50%,
+    transparent 100%
+  );
+  animation: scrollHintGlide 2.6s cubic-bezier(0.55, 0.05, 0.45, 0.95) infinite;
+}
+
+@keyframes scrollHintReveal {
+  from { opacity: 0; }
+  to   { opacity: 0.55; }
+}
+
+@keyframes scrollHintGlide {
+  0%   { transform: translateY(0); }
+  100% { transform: translateY(200%); }
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   WORKS SECTION
+═══════════════════════════════════════════════════════════ */
 
 .section-marker {
   display: flex;
@@ -173,8 +367,6 @@ const cards = [
   white-space: nowrap;
 }
 
-/* ── Card stack ── */
-
 .cards-stack {
   display: flex;
   flex-direction: column;
@@ -182,22 +374,18 @@ const cards = [
   padding: 0 clamp(2rem, 4vw, 4.5rem);
 }
 
-/* ── Card ── */
-
 .card {
   display: block;
   color: inherit;
   text-decoration: none;
 }
 
-/* Default: 3:2 landscape */
 .card-img-wrap {
   position: relative;
   overflow: hidden;
   aspect-ratio: 3 / 2;
   background: #0a0a0a;
 }
-
 
 .card-img {
   width: 100%;
@@ -210,8 +398,6 @@ const cards = [
 .card:hover .card-img {
   transform: scale(1.025);
 }
-
-/* ── Hover overlay ── */
 
 .card-overlay {
   position: absolute;
@@ -263,17 +449,24 @@ const cards = [
 /* ── MOBILE ────────────────────────────────────────────────── */
 
 @media (max-width: 767px) {
-  .hero { padding: 7.5rem 1.25rem 6rem; }
-
-  .hero-caption {
-    inset-inline: 1.25rem;
-    bottom: 1.75rem;
-  }
+  .hero { height: 280vh; }
+  .hero-fixed { padding: 6rem 1.5rem 5rem; }
+  .hero-stage { gap: 1.5rem; }
+  .name-abm   { font-size: clamp(4.5rem, 22vw, 7rem); }
+  .hero-sentence   { max-width: 32ch; }
+  .hero-sentence p { font-size: clamp(1.0625rem, 4.6vw, 1.375rem); line-height: 1.35; }
+  .hero-sentence-2 p { font-size: clamp(1rem, 4.2vw, 1.25rem); }
+  .hero-caption { inset-inline: 1.25rem; bottom: 1.5rem; }
+  .hero-caption span { font-size: 0.5rem; letter-spacing: 0.32em; }
+  .scroll-hint { bottom: 4.25rem; height: 36px; }
 
   .section-marker { padding: 4rem 1.25rem 2.5rem; }
-
   .cards-stack { padding: 0 1.25rem; gap: clamp(3rem, 10vw, 5rem); }
+}
 
+@media (max-width: 360px) {
+  .hero-fixed { padding: 5.5rem 1.25rem 4.5rem; }
+  .name-abm   { font-size: 4.25rem; }
 }
 
 </style>
