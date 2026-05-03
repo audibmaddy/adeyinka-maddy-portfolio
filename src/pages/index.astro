@@ -5,9 +5,12 @@
  * Hero:  Sticky scroll-driven intro.
  *        ABM begins dead-center; as the user scrolls, ABM scales
  *        down and the stage translates up to reveal two sentences
- *        of intro copy. The hero zone is 320vh (280vh on mobile)
- *        so the user has scroll runway to walk through the states.
- * Works: Vertical stack of large 3:2 landscape cards (unchanged).
+ *        of intro copy.
+ *
+ * Works: Editorial cards — big justified all-caps headline (Helvetica)
+ *        layered over the image, plus a centered project title + role
+ *        (Instrument Serif) at the bottom. The Photography card is
+ *        intentionally bare (credit-only).
  */
 import Layout from '../layouts/Layout.astro';
 import { Image } from 'astro:assets';
@@ -21,15 +24,89 @@ import oofCover       from '../content/projects/oof-campaign-omnicom/media/hero.
 import adidasCover    from '../content/projects/adidas-avirex/media/cover.webp';
 import fordhamHero    from '../content/series/fordham-road/media/hero.webp';
 
-const cards = [
-  { title: 'Milkshake Collective Volume 1',                  href: '/work/milkshake-collective',         cover: milkshakeCover, imgPos: 'center top'    },
-  { title: 'Third Eye x Takeout Popup',                      href: '/projects/third-eye',                cover: thirdEyeCover,  imgPos: 'center top'    },
-  { title: 'adidas × Avirex: Legacy Reimagined',             href: '/projects/adidas-avirex',            cover: adidasCover,    imgPos: 'center center' },
-  { title: 'Fordham University Spring Weekend Lineup Reveal',href: '/projects/sw-reveal',                cover: swCover,        imgPos: 'center top'    },
-  { title: 'The Residency by Airbnb',                        href: '/projects/the-residency-airbnb',     cover: airbnbCover,    imgPos: 'center top'    },
-  { title: 'Uber Robots take over Philidelphia',             href: '/projects/uber-brief',               cover: uberCover,      imgPos: 'center center' },
-  { title: 'OOF Campaign',                                   href: '/projects/oof-campaign-omnicom',     cover: oofCover,       imgPos: 'center top'    },
-  { title: 'Photography',                                    href: '/work?tab=selected',                 cover: fordhamHero,    imgPos: 'center top'    },
+type ForcedLine = { text: string; last?: 'center' | 'right' | 'left' };
+type Card = {
+  title: string;
+  role: string;
+  href: string;
+  cover: ImageMetadata;
+  imgPos: string;
+  headline?: string;
+  forcedLines?: ForcedLine[];
+  noHeadline?: boolean;
+};
+
+import type { ImageMetadata } from 'astro';
+
+const cards: Card[] = [
+  {
+    title: 'Milkshake Collective Volume 1',
+    role: 'Creative Director + Photographer',
+    href: '/work/milkshake-collective',
+    cover: milkshakeCover,
+    imgPos: 'center top',
+    forcedLines: [
+      { text: 'DM’d my way' },
+      { text: 'into first' },
+      { text: 'campaign', last: 'center' },
+    ],
+  },
+  {
+    title: 'Third Eye × Takeout Popup',
+    role: 'Director + Photographer',
+    headline: 'Turned a Bronx popup into a moment',
+    href: '/projects/third-eye',
+    cover: thirdEyeCover,
+    imgPos: 'center top',
+  },
+  {
+    title: 'adidas × Avirex: Legacy Reimagined',
+    role: "Director’s Assistant",
+    headline: 'I just assisted on this tbh',
+    href: '/projects/adidas-avirex',
+    cover: adidasCover,
+    imgPos: 'center center',
+  },
+  {
+    title: 'Fordham Spring Weekend Lineup Reveal',
+    role: 'Creative Director + Strategy + Editor',
+    headline: 'How to make students not hate the lineup they asked for',
+    href: '/projects/sw-reveal',
+    cover: swCover,
+    imgPos: 'center top',
+  },
+  {
+    title: 'The Residency by Airbnb',
+    role: 'Art Director + Strategy',
+    headline: 'Moving sucks when you don’t know anyone',
+    href: '/projects/the-residency-airbnb',
+    cover: airbnbCover,
+    imgPos: 'center top',
+  },
+  {
+    title: 'Uber Robots Take Over Philadelphia',
+    role: 'Art Director + Strategy',
+    headline: 'We finna raid Philly with robots',
+    href: '/projects/uber-brief',
+    cover: uberCover,
+    imgPos: 'center center',
+  },
+  {
+    title: 'OOF Campaign',
+    role: 'Art Director + Strategy',
+    headline: 'Gen Z doesn’t care about boomers’ bones',
+    href: '/projects/oof-campaign-omnicom',
+    cover: oofCover,
+    imgPos: 'center top',
+  },
+  {
+    title: 'Photography',
+    role: 'Selected Work',
+    href: '/work?tab=selected',
+    cover: fordhamHero,
+    imgPos: 'center top',
+    noHeadline: true,
+  },
 ];
 ---
 
@@ -78,7 +155,7 @@ const cards = [
 
 
 <!-- ═══════════════════════════════════════════════════════════
-     WORKS — vertical card stack
+     WORKS — editorial cards
 ════════════════════════════════════════════════════════════ -->
 <section class="works-section" aria-label="Work">
 
@@ -87,7 +164,7 @@ const cards = [
   </div>
 
   <div class="cards-stack">
-    {cards.map(({ title, href, cover, imgPos }, i) => (
+    {cards.map(({ title, role, href, cover, imgPos, headline, forcedLines, noHeadline }, i) => (
       <a href={href} class="card" aria-label={title}>
         <div class="card-img-wrap">
           <Image
@@ -99,8 +176,21 @@ const cards = [
             sizes="(max-width: 767px) 100vw, 90vw"
             style={`object-position: ${imgPos}`}
           />
-          <div class="card-overlay" aria-hidden="true">
-            <span class="overlay-title">{title}</span>
+
+          {!noHeadline && forcedLines && (
+            <h3 class="card-headline card-headline--forced">
+              {forcedLines.map(line => (
+                <span data-last={line.last}>{line.text}</span>
+              ))}
+            </h3>
+          )}
+          {!noHeadline && headline && !forcedLines && (
+            <h3 class="card-headline">{headline}</h3>
+          )}
+
+          <div class="card-credit">
+            <span class="credit-title">{title}</span>
+            <span class="credit-role">{role}</span>
           </div>
         </div>
       </a>
@@ -181,13 +271,11 @@ const cards = [
    HERO — sticky scroll-driven intro
 ═══════════════════════════════════════════════════════════ */
 
-/* Tall outer scroll zone — distance drives the animation */
 .hero {
   position: relative;
   height: 320vh;
 }
 
-/* Sticky inner — pinned to viewport for the entire scroll zone */
 .hero-fixed {
   position: sticky;
   top: 0;
@@ -200,7 +288,6 @@ const cards = [
   padding: 8rem 2.25rem 7rem;
 }
 
-/* Subtle film grain */
 .hero-fixed::before {
   content: '';
   position: absolute;
@@ -210,7 +297,6 @@ const cards = [
   z-index: 0;
 }
 
-/* Stage holds ABM + sentences as a single translatable group */
 .hero-stage {
   position: relative;
   z-index: 1;
@@ -242,7 +328,6 @@ const cards = [
   will-change: transform;
 }
 
-/* Sentences — start hidden, faded in by JS */
 .hero-sentence {
   max-width: 720px;
   width: 100%;
@@ -279,7 +364,6 @@ const cards = [
   color: #fff;
 }
 
-/* Bottom caption */
 .hero-caption {
   position: absolute;
   inset-inline: 2.25rem;
@@ -302,7 +386,6 @@ const cards = [
   padding-left: 0.38em;
 }
 
-/* Scroll hint — vertical hairline with downward glide */
 .scroll-hint {
   position: absolute;
   bottom: 5.25rem;
@@ -347,7 +430,7 @@ const cards = [
 
 
 /* ═══════════════════════════════════════════════════════════
-   WORKS SECTION
+   WORKS — editorial cards
 ═══════════════════════════════════════════════════════════ */
 
 .section-marker {
@@ -370,21 +453,38 @@ const cards = [
 .cards-stack {
   display: flex;
   flex-direction: column;
-  gap: clamp(4.5rem, 9vw, 11rem);
-  padding: 0 clamp(2rem, 4vw, 4.5rem);
+  gap: clamp(2.5rem, 5vw, 5.5rem);
+  padding: 0 clamp(1.25rem, 2.5vw, 2.5rem);
 }
 
 .card {
   display: block;
   color: inherit;
   text-decoration: none;
+  position: relative;
 }
 
 .card-img-wrap {
   position: relative;
   overflow: hidden;
-  aspect-ratio: 3 / 2;
+  aspect-ratio: 16 / 10;
   background: #0a0a0a;
+}
+
+/* Vignette top + bottom — keeps headline and credit legible */
+.card-img-wrap::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.18) 0%,
+    rgba(0, 0, 0, 0)   22%,
+    rgba(0, 0, 0, 0)   70%,
+    rgba(0, 0, 0, 0.42) 100%
+  );
+  pointer-events: none;
+  z-index: 1;
 }
 
 .card-img {
@@ -399,35 +499,93 @@ const cards = [
   transform: scale(1.025);
 }
 
-.card-overlay {
+
+/* ── Headline (justified all-caps, layered over image) ── */
+
+.card-headline {
   position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    to top,
-    rgba(0, 0, 0, 0.74) 0%,
-    rgba(0, 0, 0, 0.08) 40%,
-    transparent 65%
-  );
-  display: flex;
-  align-items: flex-end;
-  padding: clamp(1.25rem, 2.5vw, 2.25rem);
-  opacity: 0;
-  transition: opacity 0.32s ease;
+  inset: clamp(1.25rem, 4vw, 3rem) clamp(1.25rem, 4vw, 3rem) auto;
   pointer-events: none;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-weight: 800;
+  font-size: clamp(2.75rem, 8.4vw, 7.5rem);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  color: #fff;
+  text-align: justify;
+  text-align-last: justify;
+  hyphens: none;
+  word-spacing: -0.02em;
+  text-shadow: 0 2px 18px rgba(0, 0, 0, 0.55), 0 1px 4px rgba(0, 0, 0, 0.7);
+  z-index: 2;
+  margin: 0;
 }
 
-.card:hover .card-overlay {
-  opacity: 1;
+/* Phantom inline-block forces the last line to also justify */
+.card-headline::after {
+  content: '';
+  display: inline-block;
+  width: 100%;
 }
 
-.overlay-title {
+/* ── Forced line-break variant (Milkshake) ── */
+.card-headline--forced { display: block; }
+.card-headline--forced::after { display: none; }
+
+.card-headline--forced > span {
+  display: block;
+  text-align: justify;
+  text-align-last: justify;
+}
+
+.card-headline--forced > span::after {
+  content: '';
+  display: inline-block;
+  width: 100%;
+}
+
+.card-headline--forced > span[data-last="center"]        { text-align-last: center; }
+.card-headline--forced > span[data-last="center"]::after { display: none; }
+.card-headline--forced > span[data-last="right"]         { text-align-last: right; }
+.card-headline--forced > span[data-last="right"]::after  { display: none; }
+.card-headline--forced > span[data-last="left"]          { text-align-last: left; }
+.card-headline--forced > span[data-last="left"]::after   { display: none; }
+
+
+/* ── Credit block (centered, bottom) ── */
+
+.card-credit {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: clamp(1.25rem, 3vw, 2.25rem);
+  text-align: center;
+  pointer-events: none;
+  color: #fff;
+  z-index: 2;
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.6), 0 1px 3px rgba(0, 0, 0, 0.7);
+}
+
+.credit-title {
+  display: block;
+  font-family: 'Instrument Serif', 'Times New Roman', serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: clamp(1.5rem, 2.6vw, 2.5rem);
+  line-height: 1.1;
+  letter-spacing: -0.005em;
+}
+
+.credit-role {
+  display: block;
+  margin-top: 0.15em;
   font-family: 'Instrument Serif', 'Times New Roman', serif;
   font-style: italic;
   font-weight: 400;
-  font-size: clamp(1.375rem, 2.8vw, 2.5rem);
-  line-height: 1.05;
-  color: #fff;
-  letter-spacing: -0.01em;
+  font-size: clamp(0.9375rem, 1.35vw, 1.25rem);
+  letter-spacing: 0;
+  opacity: 0.95;
 }
 
 
@@ -461,12 +619,56 @@ const cards = [
   .scroll-hint { bottom: 4.25rem; height: 36px; }
 
   .section-marker { padding: 4rem 1.25rem 2.5rem; }
-  .cards-stack { padding: 0 1.25rem; gap: clamp(3rem, 10vw, 5rem); }
+
+  .cards-stack { padding: 0 1rem; gap: 2.25rem; }
+
+  .card-img-wrap { aspect-ratio: 4 / 5; }
+
+  /* Stronger bottom vignette so credit always reads on mobile */
+  .card-img-wrap::after {
+    background: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0.22) 0%,
+      rgba(0, 0, 0, 0)   18%,
+      rgba(0, 0, 0, 0)   55%,
+      rgba(0, 0, 0, 0.7) 100%
+    );
+  }
+
+  .card-headline {
+    inset: 1.25rem 1.25rem auto;
+    font-size: clamp(2rem, 9.5vw, 3.25rem);
+    line-height: 1.02;
+    letter-spacing: -0.025em;
+  }
+
+  .card-credit  { bottom: 1.25rem; padding: 0 1rem; }
+  .credit-title { font-size: 1.375rem; }
+  .credit-role  { font-size: 0.9375rem; }
+}
+
+/* On very narrow viewports, drop forced line-breaks back to natural justify */
+@media (max-width: 420px) {
+  .card-headline--forced > span {
+    display: inline;
+    text-align-last: justify;
+  }
+  .card-headline--forced > span::after { display: none; }
+  .card-headline--forced > span[data-last] { text-align-last: justify; }
+  .card-headline--forced > span:not(:last-child)::after {
+    content: ' ';
+    display: inline;
+    width: auto;
+  }
 }
 
 @media (max-width: 360px) {
   .hero-fixed { padding: 5.5rem 1.25rem 4.5rem; }
   .name-abm   { font-size: 4.25rem; }
+
+  .card-headline { font-size: 8.75vw; letter-spacing: -0.03em; }
+  .credit-title  { font-size: 1.1875rem; }
+  .credit-role   { font-size: 0.875rem; }
 }
 
 </style>

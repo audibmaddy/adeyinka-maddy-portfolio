@@ -11,7 +11,7 @@ isGallery: true
 label: "Milkshake Collective Volume 1"
 linkTo: "/work/milkshake-collective"
 client: "Milkshake Collective"
-role: "Creative Director and Photographer"
+role: "Creative Director + Photographer"
 location: "NYC"
 scope: "Led end-to-end campaign development in collaboration with the brand owner, including concept and mood boarding, model and look selection, styling, shoot logistics, photography, editing, and delivery of media assets for web, social, and e-commerce."
 imageOrder:

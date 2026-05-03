@@ -1,5 +1,5 @@
 ---
-title: "Uber Robots take over Philidelphia"
+title: "Uber Robots Take Over Philadelphia"
 slug: "uber-brief"
 date: "2026-04-01"
 type: "project"
@@ -14,7 +14,7 @@ externalUrl: "https://uberbrief.netlify.app/"
 
 # Optional extra info
 client: "Uber"
-role: "Project Manager"
+role: "Art Director + Strategy"
 location: "NYC"
 ---
 

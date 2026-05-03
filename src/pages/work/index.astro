@@ -134,6 +134,7 @@ const PROJECT_META: Record<string, { sub: string; portrait: boolean; imgPos: str
 const collectionCards = collectionsFromSelected.map(e => ({
   slug:     e.data.slug,
   title:    e.data.title,
+  role:     e.data.role ?? '',
   href:     `/work/${e.data.slug}`,
   cover:    resolveCover(e.data.slug, e.data.coverImage, selectedCovers, 'selected-works'),
   sub:      PROJECT_META[e.data.slug]?.sub ?? '',
@@ -144,6 +145,7 @@ const collectionCards = collectionsFromSelected.map(e => ({
 const projectCards = projects.map(e => ({
   slug:     e.data.slug,
   title:    e.data.title,
+  role:     e.data.role ?? '',
   href:     `/projects/${e.data.slug}`,
   cover:    resolveCover(e.data.slug, e.data.coverImage, projectCovers, 'projects'),
   sub:      PROJECT_META[e.data.slug]?.sub ?? '',
@@ -199,7 +201,7 @@ const orderedProjectCards = PROJECT_ORDER
   aria-live="polite"
 >
   <div class="work-grid work-grid--projects">
-    {orderedProjectCards.map(({ slug, title, href, cover, sub, portrait, imgPos }, i) => (
+    {orderedProjectCards.map(({ slug, title, role, href, cover, sub, portrait, imgPos }, i) => (
       <figure class="work-item work-item--linked" aria-label={title}>
         <a href={href} class="item-inner" tabindex="0">
           <div class="item-img-wrap">
@@ -217,7 +219,10 @@ const orderedProjectCards = PROJECT_ORDER
               <div class="item-placeholder" aria-hidden="true"></div>
             )}
             <div class="item-overlay" aria-hidden="true">
-              <span class="overlay-title">{title}</span>
+              <div class="overlay-stack">
+                <span class="overlay-title">{title}</span>
+                {role && <span class="overlay-role">{role}</span>}
+              </div>
             </div>
           </div>
         </a>
@@ -600,14 +605,30 @@ const orderedProjectCards = PROJECT_ORDER
   line-height: 1;
 }
 
+.overlay-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35em;
+}
+
 .overlay-title {
+  font-family: 'Instrument Serif', 'Times New Roman', serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: clamp(1.5rem, 2.8vw, 2.5rem);
+  line-height: 1.05;
+  color: #fff;
+  letter-spacing: -0.005em;
+}
+
+.overlay-role {
   font-family: 'Instrument Serif', 'Times New Roman', serif;
   font-style: italic;
   font-weight: 400;
-  font-size: clamp(1.375rem, 2.8vw, 2.5rem);
-  line-height: 1.05;
-  color: #fff;
-  letter-spacing: -0.01em;
+  font-size: clamp(0.9375rem, 1.35vw, 1.25rem);
+  line-height: 1.2;
+  color: rgba(255, 255, 255, 0.92);
+  letter-spacing: 0;
 }
 
 

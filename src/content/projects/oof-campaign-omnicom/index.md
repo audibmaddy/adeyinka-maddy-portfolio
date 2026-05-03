@@ -8,7 +8,7 @@ coverImage: "./media/hero.jpg"
 heroPosition: "center center"
 description: "Produced a campaign for the Omnicom Health of Advertising Challenge"
 client: "Omnicom Health"
-role: "Project Manager"
+role: "Art Director + Strategy"
 location: "NYC"
 imageOrder:
   - hero.jpg

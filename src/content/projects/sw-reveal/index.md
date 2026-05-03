@@ -1,5 +1,5 @@
 ---
-title: "Fordham University Spring Weekend Lineup Reveal"
+title: "Fordham Spring Weekend Lineup Reveal"
 slug: "sw-reveal"
 date: "2025-04-01"
 type: "project"
@@ -15,7 +15,7 @@ linkedinEmbed: '<iframe src="https://www.linkedin.com/embed/feed/update/urn:li:u
 
 # Optional extra info
 client: "Fordham University"
-role: "President + Editor"
+role: "Creative Director + Strategy + Editor"
 location: "NYC"
 ---
 

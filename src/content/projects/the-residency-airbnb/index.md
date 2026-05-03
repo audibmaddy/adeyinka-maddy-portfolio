@@ -15,7 +15,7 @@ externalUrl: "https://infja.netlify.app"
 
 # Optional extra info
 client: "Airbnb"
-role: "Project Manager"
+role: "Art Director + Strategy"
 location: "NYC"
 ---
 
