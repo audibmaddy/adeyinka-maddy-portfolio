@@ -500,7 +500,9 @@ const cards: Card[] = [
 }
 
 
-/* ── Headline (justified all-caps, layered over image) ── */
+/* ── Headline (justified all-caps, layered over image)
+      Hidden by default; revealed on hover (desktop) or always
+      shown on touch devices via @media (hover: none) below. ── */
 
 .card-headline {
   position: absolute;
@@ -517,9 +519,54 @@ const cards: Card[] = [
   text-align-last: justify;
   hyphens: none;
   word-spacing: -0.02em;
-  text-shadow: 0 2px 18px rgba(0, 0, 0, 0.55), 0 1px 4px rgba(0, 0, 0, 0.7);
   z-index: 2;
   margin: 0;
+  /* Hover-revealed (desktop) */
+  opacity: 0;
+  transform: translateY(-4px);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+/* Reveal on hover (desktop with real pointer) and on keyboard focus */
+@media (hover: hover) and (pointer: fine) {
+  .card:hover .card-headline,
+  .card:focus-visible .card-headline {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Slightly intensify the top vignette on hover so the headline
+     reads cleanly without needing a text-shadow */
+  .card:hover .card-img-wrap::after,
+  .card:focus-visible .card-img-wrap::after {
+    background: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0.42) 0%,
+      rgba(0, 0, 0, 0.05) 32%,
+      rgba(0, 0, 0, 0)   70%,
+      rgba(0, 0, 0, 0.42) 100%
+    );
+  }
+}
+
+/* Touch devices (no hover) — always show the headline so users
+   never miss the editorial copy, and use the stronger vignette
+   (same as hover state) for legibility against the photo. */
+@media (hover: none) {
+  .card-headline {
+    opacity: 1;
+    transform: none;
+  }
+
+  .card-img-wrap::after {
+    background: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0.42) 0%,
+      rgba(0, 0, 0, 0.05) 32%,
+      rgba(0, 0, 0, 0)   70%,
+      rgba(0, 0, 0, 0.42) 100%
+    );
+  }
 }
 
 /* Phantom inline-block forces the last line to also justify */
