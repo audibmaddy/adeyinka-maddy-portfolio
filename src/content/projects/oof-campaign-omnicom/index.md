@@ -26,7 +26,7 @@ highlightedImages:
   - 08-featured.jpeg
 ---
 
-**My role:** Project Manager leading the team across research, concept development, strategic direction, and final pitch execution.
+**My role:** Art Director and Strategy lead, driving the team across research, concept development, visual direction, and final pitch execution.
 
 **Insight:** People recognize osteoporosis as a serious condition, but many younger adults do not see themselves as personally at risk.
 
