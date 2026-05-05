@@ -22,6 +22,6 @@ location: "NYC"
 
 **Insight:** Fans plan obsessively for the match itself, but not for the moment they run out of what they need and realize they cannot leave to get it.
 
-**Problem:** In a high-density event like the World Cup in Philadelphia — road closures, crowd congestion, and sponsor-controlled zones — how can we remind World Cup fans that Uber can deliver almost anything.
+**Problem:** In a high-density event like the World Cup in Philadelphia — road closures, crowd congestion, and sponsor-controlled zones — how can we remind World Cup fans that Uber can deliver almost almost anything.
 
 **Solution:** We created The Robot Bypass, a real-time ambush concept that positioned Uber Eats Avride robot fleet as the only delivery system built for citywide gridlock, using sidewalk mobility, strategic deployment zones, and a culturally tuned robot persona to let the brand reach stranded fans where cars, couriers, and even competitors could not.

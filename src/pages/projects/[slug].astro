@@ -126,19 +126,6 @@ const isInstagramFirst  = Boolean(entry.data.instagramId) && !entry.data.vimeoId
       )}
     </header>
 
-    <section class="theater" aria-label={`${entry.data.title} — video`}>
-      <div class="theater-wrap">
-        <video
-          src={localVideoUrl!}
-          class="local-video"
-          controls
-          playsinline
-          preload="metadata"
-          aria-label={entry.data.title}
-        ></video>
-      </div>
-    </section>
-
     <div class="meta-bar" aria-label="Project information">
       {entry.data.client && (
         <div class="meta-item">
@@ -172,6 +159,19 @@ const isInstagramFirst  = Boolean(entry.data.instagramId) && !entry.data.vimeoId
         </div>
       </section>
     )}
+
+    <section class="theater" aria-label={`${entry.data.title} — video`}>
+      <div class="theater-wrap">
+        <video
+          src={localVideoUrl!}
+          class="local-video"
+          controls
+          playsinline
+          preload="metadata"
+          aria-label={entry.data.title}
+        ></video>
+      </div>
+    </section>
   </>
 
 ) : isInstagramFirst ? (
@@ -196,20 +196,6 @@ const isInstagramFirst  = Boolean(entry.data.instagramId) && !entry.data.vimeoId
         <p class="assist-label">Assistant Credit</p>
       )}
     </header>
-
-    <!-- Portrait reel embed -->
-    <section class="ig-theater" aria-label={`${entry.data.title} — reel`}>
-      <div class="ig-wrap">
-        <iframe
-          src={`https://www.instagram.com/reel/${entry.data.instagramId}/embed/captioned/`}
-          class="ig-iframe"
-          frameborder="0"
-          scrolling="no"
-          allowtransparency="true"
-          title={entry.data.title}
-        ></iframe>
-      </div>
-    </section>
 
     <!-- Metadata bar -->
     <div class="meta-bar" aria-label="Project information">
@@ -245,6 +231,20 @@ const isInstagramFirst  = Boolean(entry.data.instagramId) && !entry.data.vimeoId
         </div>
       </section>
     )}
+
+    <!-- Portrait reel embed -->
+    <section class="ig-theater" aria-label={`${entry.data.title} — reel`}>
+      <div class="ig-wrap">
+        <iframe
+          src={`https://www.instagram.com/reel/${entry.data.instagramId}/embed/captioned/`}
+          class="ig-iframe"
+          frameborder="0"
+          scrolling="no"
+          allowtransparency="true"
+          title={entry.data.title}
+        ></iframe>
+      </div>
+    </section>
   </>
 
 ) : isVideoFirst ? (
@@ -265,21 +265,6 @@ const isInstagramFirst  = Boolean(entry.data.instagramId) && !entry.data.vimeoId
       </div>
       <h1 class="vf-title">{entry.data.title}</h1>
     </header>
-
-    <!-- Theater video -->
-    <section class="theater" aria-label={`${entry.data.title} — video`}>
-      <div class="theater-wrap">
-        <div class="theater-ratio">
-          <iframe
-            src={`https://player.vimeo.com/video/${entry.data.vimeoId}?badge=0&autopause=0&player_id=0&app_id=58479`}
-            frameborder="0"
-            allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media"
-            class="theater-iframe"
-            title={entry.data.title}
-          ></iframe>
-        </div>
-      </div>
-    </section>
 
     <!-- Metadata bar -->
     <div class="meta-bar" aria-label="Project information">
@@ -316,6 +301,21 @@ const isInstagramFirst  = Boolean(entry.data.instagramId) && !entry.data.vimeoId
         </div>
       </section>
     )}
+
+    <!-- Theater video -->
+    <section class="theater" aria-label={`${entry.data.title} — video`}>
+      <div class="theater-wrap">
+        <div class="theater-ratio">
+          <iframe
+            src={`https://player.vimeo.com/video/${entry.data.vimeoId}?badge=0&autopause=0&player_id=0&app_id=58479`}
+            frameborder="0"
+            allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media"
+            class="theater-iframe"
+            title={entry.data.title}
+          ></iframe>
+        </div>
+      </div>
+    </section>
   </>
 
 ) : (
@@ -553,8 +553,7 @@ const isInstagramFirst  = Boolean(entry.data.instagramId) && !entry.data.vimeoId
 .scope-section {
   display: flex;
   justify-content: center;
-  padding: clamp(3rem, 5vw, 6rem) 2.25rem clamp(4rem, 7vw, 8rem);
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  padding: clamp(5rem, 8vw, 10rem) 2.25rem clamp(4rem, 7vw, 8rem);
 }
 
 .scope-body {
