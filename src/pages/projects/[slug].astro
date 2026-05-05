@@ -112,19 +112,35 @@ const isInstagramFirst  = Boolean(entry.data.instagramId) && !entry.data.vimeoId
   ════════════════════════════════════════════════════════════ -->
 
   <>
-    <header class="vf-header">
-      <div class="vf-meta">
-        {entry.data.tags.map(tag => (
-          <span class="meta-tag">{tag}</span>
-        ))}
-        <span class="meta-dot" aria-hidden="true">/</span>
-        <span class="meta-year">{year}</span>
-      </div>
-      <h1 class="vf-title">{entry.data.title}</h1>
-      {entry.data.assistantCredit && (
-        <p class="assist-label">Assistant Credit</p>
+    <!-- Full-bleed hero (same as image-first) -->
+    <section class="hero" aria-label={`${entry.data.title} — cover`}>
+      {heroImage ? (
+        <Image
+          src={heroImage}
+          alt={`${entry.data.title} — cover`}
+          class="hero-img"
+          loading="eager"
+          widths={[1200, 1800, 2400]}
+          sizes="100vw"
+          style={`object-position: ${entry.data.heroPosition ?? 'center top'}`}
+        />
+      ) : (
+        <div class="hero-placeholder" aria-hidden="true"></div>
       )}
-    </header>
+      <div class="hero-label">
+        <div class="hero-meta">
+          {entry.data.tags.map(tag => (
+            <span class="meta-tag">{tag}</span>
+          ))}
+          <span class="meta-dot" aria-hidden="true">/</span>
+          <span class="meta-year">{year}</span>
+        </div>
+        <h1 class="hero-title">{entry.data.title}</h1>
+        {entry.data.assistantCredit && (
+          <p class="assist-label">Assistant Credit</p>
+        )}
+      </div>
+    </section>
 
     <div class="meta-bar" aria-label="Project information">
       {entry.data.client && (
@@ -254,17 +270,32 @@ const isInstagramFirst  = Boolean(entry.data.instagramId) && !entry.data.vimeoId
   ════════════════════════════════════════════════════════════ -->
 
   <>
-    <!-- Compact title header -->
-    <header class="vf-header">
-      <div class="vf-meta">
-        {entry.data.tags.map(tag => (
-          <span class="meta-tag">{tag}</span>
-        ))}
-        <span class="meta-dot" aria-hidden="true">/</span>
-        <span class="meta-year">{year}</span>
+    <!-- Full-bleed hero (same as image-first) -->
+    <section class="hero" aria-label={`${entry.data.title} — cover`}>
+      {heroImage ? (
+        <Image
+          src={heroImage}
+          alt={`${entry.data.title} — cover`}
+          class="hero-img"
+          loading="eager"
+          widths={[1200, 1800, 2400]}
+          sizes="100vw"
+          style={`object-position: ${entry.data.heroPosition ?? 'center top'}`}
+        />
+      ) : (
+        <div class="hero-placeholder" aria-hidden="true"></div>
+      )}
+      <div class="hero-label">
+        <div class="hero-meta">
+          {entry.data.tags.map(tag => (
+            <span class="meta-tag">{tag}</span>
+          ))}
+          <span class="meta-dot" aria-hidden="true">/</span>
+          <span class="meta-year">{year}</span>
+        </div>
+        <h1 class="hero-title">{entry.data.title}</h1>
       </div>
-      <h1 class="vf-title">{entry.data.title}</h1>
-    </header>
+    </section>
 
     <!-- Metadata bar -->
     <div class="meta-bar" aria-label="Project information">
